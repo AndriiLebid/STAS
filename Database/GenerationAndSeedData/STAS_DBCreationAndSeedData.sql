@@ -3,7 +3,7 @@ NAME: Andrii Lebid
 DATE: 05/27/2024
 PURPOSE: Advatek System
 Description: Simple Time And Attendance System /Database Creation Script
-Version: 1.1
+Version: 1.2
 */
 
 USE [STAS-A];
@@ -116,6 +116,7 @@ IF OBJECT_ID('EpicSolutions.dbo.Employee') IS NULL
 		MiddleInitial NVARCHAR(1) NULL,
 		LastName NVARCHAR(30) NOT NULL,
 		TypeEmployeeId INT NULL,
+		RecordVersion ROWVERSION NOT NULL,
 		CONSTRAINT FK_Employee_TypeEmployee FOREIGN KEY (TypeEmployeeId) REFERENCES EmployeeType(TypeEmployeeId)
 		)
 		PRINT '------------------------------------------------------------------------------------------';
@@ -140,9 +141,9 @@ IF OBJECT_ID('EpicSolutions.dbo.RawScan') IS NULL
         CREATE TABLE [RawScan] (
             RawScanID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
 			EmployeeId INT NOT NULL,
-			ScanDate Date NOT NULL,
-			ScanTime Time NOT NULL,
+			ScanDate DateTime2 NOT NULL,
 			ScanType INT NOT NULL,
+			RecordVersion ROWVERSION NOT NULL,
 			CONSTRAINT FK_Employee_RawScan FOREIGN KEY (ScanType) REFERENCES [Employee](EmployeeId)
         )
         PRINT '------------------------------------------------------------------------------------------';
@@ -220,12 +221,12 @@ GO
 
 SET IDENTITY_INSERT [dbo].[RawScan] ON 
 
-INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanTime, ScanType) VALUES (1, 1, '2023-06-01', '10:25:00', 1);
-INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanTime, ScanType) VALUES (2, 1, '2023-06-01', '11:25:00', 1);
-INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanTime, ScanType) VALUES (3, 2, '2023-06-01', '10:27:00', 1);
-INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanTime, ScanType) VALUES (4, 2, '2023-06-01', '11:27:00', 1);
-INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanTime, ScanType) VALUES (5, 2, '2023-06-01', '12:25:00', 1);
-INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanTime, ScanType) VALUES (6, 2, '2023-06-01', '12:25:00', 1);
+INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanType) VALUES (1, 1, '2023-06-01 10:25:00', 1);
+INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanType) VALUES (2, 1, '2023-06-01 11:25:00', 1);
+INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanType) VALUES (3, 2, '2023-06-01 10:27:00', 1);
+INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanType) VALUES (4, 2, '2023-06-01 11:27:00', 1);
+INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanType) VALUES (5, 2, '2023-06-01 12:25:00', 1);
+INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanType) VALUES (6, 2, '2023-06-01 12:25:00', 1);
 
 
 SET IDENTITY_INSERT [dbo].[RawScan] OFF

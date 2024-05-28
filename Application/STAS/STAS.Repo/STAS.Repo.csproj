@@ -6,4 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\STAS.DAL\STAS.DAL.csproj" />
+    <ProjectReference Include="..\STAS.Model\STAS.Model.csproj" />
+    <ProjectReference Include="..\STAS.Type\STAS.Type.csproj" />
+  </ItemGroup>
+
 </Project>

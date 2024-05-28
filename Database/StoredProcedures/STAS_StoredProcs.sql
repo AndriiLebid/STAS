@@ -10,7 +10,12 @@ Version: 1.0
 USE [STAS-A];
 GO
 
-CREATE OR ALTER PROC [dbo].[OrderRecordVersion]
+
+-- Employee procedures
+
+
+
+CREATE OR ALTER PROC [dbo].[spSearchEmployeesById]
 @EmployeeId AS INT
 AS
 BEGIN
@@ -24,3 +29,168 @@ END
 
 GO
 
+CREATE OR ALTER PROC [dbo].[spSearchEmployeesByNumber]
+@EmployeeCardNumber AS INT
+AS
+BEGIN
+	BEGIN TRY
+		SELECT * FROM Employee WHERE EmployeeCardNumber = @EmployeeCardNumber
+	END TRY
+	BEGIN CATCH
+	;THROW
+	END CATCH
+END
+
+GO
+
+CREATE OR ALTER PROC [dbo].[spAddEmployee]
+	@EmployeeId AS INT OUTPUT,
+	@EmployeeCardNumber AS NVARCHAR(4),
+	@FirstName AS NVARCHAR(30),
+	@MiddleInitial AS NVARCHAR(1),
+	@LastName AS NVARCHAR(30),
+	@EmployeeTypeId AS INT
+AS
+BEGIN
+	BEGIN TRANSACTION
+	BEGIN TRY
+		
+		 INSERT INTO [dbo].[Employee] (
+			[EmployeeCardNumber],
+            [FirstName],
+            [MiddleInitial],
+            [LastName],
+            [TypeEmployeeId]	
+        )
+        VALUES (
+			@EmployeeCardNumber,
+            @FirstName,
+            @MiddleInitial,
+            @LastName,
+            @EmployeeTypeId
+        );
+
+		SET @EmployeeId = SCOPE_IDENTITY();
+		COMMIT TRANSACTION;
+
+	END TRY
+	BEGIN CATCH
+	IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
+	END CATCH
+END
+
+GO
+
+
+CREATE OR ALTER PROC [dbo].[spUpdateEmployee]
+	@EmployeeId AS INT,
+	@EmployeeCardNumber AS NVARCHAR(4),
+	@FirstName AS NVARCHAR(30),
+	@MiddleInitial AS NVARCHAR(1),
+	@LastName AS NVARCHAR(30),
+	@EmployeeTypeId AS INT,
+	@RecordVersion ROWVERSION
+AS
+BEGIN
+	
+	BEGIN TRY
+	DECLARE @CurrentRecordVersion ROWVERSION = (SELECT Employee.RecordVersion FROM Employee WHERE EmployeeId = @EmployeeId);
+        IF @RecordVersion <> @CurrentRecordVersion
+            THROW 51002, 'The record has been updated since you last retrieved it.', 1;
+
+
+	BEGIN TRANSACTION
+		
+		 UPDATE Employee
+			SET
+				EmployeeCardNumber = @EmployeeCardNumber,
+				FirstName = @FirstName,
+				MiddleInitial = @MiddleInitial,
+				LastName = @LastName,
+				TypeEmployeeId = @EmployeeTypeId
+			WHERE 
+				EmployeeId = @EmployeeId;
+      
+
+		SET @EmployeeId = SCOPE_IDENTITY();
+
+		COMMIT TRANSACTION;
+
+	END TRY
+	BEGIN CATCH
+	IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
+	END CATCH
+END
+
+GO
+
+-- Scan procedures
+
+CREATE OR ALTER PROC [dbo].[spSearchScanByEmployeeId]
+@EmployeeId AS INT
+AS
+BEGIN
+	BEGIN TRY
+		SELECT * FROM RawScan WHERE EmployeeId = @EmployeeId
+	END TRY
+	BEGIN CATCH
+	;THROW
+	END CATCH
+END
+
+GO
+
+CREATE OR ALTER PROC [dbo].[spSearchScanByDate]
+    @StartDate AS DATETIME2 = NULL,
+    @EndDate AS DATETIME2 = NULL
+AS
+BEGIN
+    BEGIN TRY
+        SELECT *
+        FROM RawScan
+        WHERE (@StartDate IS NULL OR ScanDate >= @StartDate)
+          AND (@EndDate IS NULL OR ScanDate <= @EndDate)
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END
+GO
+
+CREATE OR ALTER PROC [dbo].[spAddScan]
+	@ScanId AS INT OUTPUT,
+	@EmployeeId AS INT,
+	@ScanDate AS DATETIME2,
+	@ScanTypeId AS INT
+AS
+BEGIN
+	BEGIN TRANSACTION
+	BEGIN TRY
+		
+		 INSERT INTO [dbo].[RawScan] (
+			[EmployeeId],
+            [ScanDate],
+            [ScanType]	
+        )
+        VALUES (
+			@EmployeeId,
+            @ScanDate,
+            @ScanTypeId
+        );
+
+		SET @ScanId = SCOPE_IDENTITY();
+		COMMIT TRANSACTION;
+
+	END TRY
+	BEGIN CATCH
+	IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
+	END CATCH
+END
+
+GO
