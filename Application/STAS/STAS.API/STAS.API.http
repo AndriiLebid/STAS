@@ -1,0 +1,6 @@
+@STAS.API_HostAddress = http://localhost:5119
+
+GET {{STAS.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
