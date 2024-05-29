@@ -3,7 +3,7 @@ NAME: Andrii Lebid
 DATE: 05/27/2024
 PURPOSE: Advatek System
 Description: Simple Time And Attendance System /Database Creation Script
-Version: 1.2
+Version: 1.3
 */
 
 USE [STAS-A];
@@ -84,6 +84,7 @@ IF OBJECT_ID('EpicSolutions.dbo.User') IS NULL
 		[Password] CHAR(64) NOT NULL,
 		PasswordSalt BINARY(16) NOT NULL,
 		UserName NVARCHAR(30) NOT NULL,
+		UserRole NVARCHAR(30) NOT NULL,
 		CONSTRAINT UQ_User_UserName UNIQUE (UserName)
 		)
 		PRINT '------------------------------------------------------------------------------------------';
@@ -171,8 +172,8 @@ GO
  
 INSERT INTO [EmployeeType] (TypeEmployeeId, TypeEmployeeName)
 VALUES 
-	(1, 'Administrator'),
-	(2, 'User')
+	(1, 'Active'),
+	(2, 'Inactive')
  
 
 SET IDENTITY_INSERT [dbo].[EmployeeType] OFF 
@@ -190,8 +191,8 @@ SET IDENTITY_INSERT [dbo].[ScanType] OFF
 
 SET IDENTITY_INSERT [dbo].[User] ON 
 
-INSERT [dbo].[User] ([UserId], [Password], [PasswordSalt], [UserName]) VALUES (1, N'd2a232d95451c7d6a4264ab1fec586560fb8cc6ff59f7ea542260293b1fe5395', 0xDE12A6FD00D1ADDDC5986C978BB1CDA8, N'Administrator')
-INSERT [dbo].[User] ([UserId], [Password], [PasswordSalt], [UserName]) VALUES (2, N'd2a232d95451c7d6a4264ab1fec586560fb8cc6ff59f7ea542260293b1fe5395', 0xDE12A6FD00D1ADDDC5986C978BB1CDA8, N'Admin')
+INSERT [dbo].[User] ([UserId], [Password], [PasswordSalt], [UserName], [UserRole]) VALUES (1, N'd2a232d95451c7d6a4264ab1fec586560fb8cc6ff59f7ea542260293b1fe5395', 0xDE12A6FD00D1ADDDC5986C978BB1CDA8, N'Administrator','Admin')
+INSERT [dbo].[User] ([UserId], [Password], [PasswordSalt], [UserName], [UserRole]) VALUES (2, N'd2a232d95451c7d6a4264ab1fec586560fb8cc6ff59f7ea542260293b1fe5395', 0xDE12A6FD00D1ADDDC5986C978BB1CDA8, N'Admin', 'Admin')
 
 SET IDENTITY_INSERT [dbo].[User] OFF
 GO

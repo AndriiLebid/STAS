@@ -10,6 +10,39 @@ Version: 1.0
 USE [STAS-A];
 GO
 
+-- User Login
+
+CREATE OR ALTER PROC [dbo].[spLogin]
+@UserName AS NVARCHAR(30),
+@Password AS NVARCHAR(64)
+
+AS
+BEGIN
+	BEGIN TRY
+		SELECT * FROM [User] 
+		WHERE [User].UserName = @UserName AND [User].[Password] = @Password
+	END TRY
+	BEGIN CATCH
+	;THROW
+	END CATCH
+END
+
+GO
+
+CREATE OR ALTER PROC [dbo].[spGetPasswordSalt]
+@UserName AS NVARCHAR(30)
+AS
+BEGIN
+	BEGIN TRY
+		SELECT PasswordSalt FROM [User] WHERE UserName = @UserName
+	END TRY
+	BEGIN CATCH
+	;THROW
+	END CATCH
+END
+
+GO
+
 
 -- Employee procedures
 
