@@ -204,7 +204,7 @@ INSERT [dbo].[Employee] ([EmployeeId], EmployeeCardNumber, [FirstName], [MiddleI
 INSERT [dbo].[Employee] ([EmployeeId], EmployeeCardNumber, [FirstName], [MiddleInitial], [LastName], TypeEmployeeId) VALUES (2,'4321', N'Paula', N'A', N'King',2)
 INSERT [dbo].[Employee] ([EmployeeId], EmployeeCardNumber, [FirstName], [MiddleInitial], [LastName], TypeEmployeeId) VALUES (3,'1214', N'Channing', N'B', N'Livingston',2)
 INSERT [dbo].[Employee] ([EmployeeId], EmployeeCardNumber, [FirstName], [MiddleInitial], [LastName], TypeEmployeeId) VALUES (4,'1224', N'Piper', N'B', N'Trevino',2)
-INSERT [dbo].[Employee] ([EmployeeId], EmployeeCardNumber, [FirstName], [MiddleInitial], [LastName], TypeEmployeeId) VALUES (5,'1234', N'Jonh', N'L', N'Delaney',2)
+INSERT [dbo].[Employee] ([EmployeeId], EmployeeCardNumber, [FirstName], [MiddleInitial], [LastName], TypeEmployeeId) VALUES (5,'9234', N'Jonh', N'L', N'Delaney',2)
 INSERT [dbo].[Employee] ([EmployeeId], EmployeeCardNumber, [FirstName], [MiddleInitial], [LastName], TypeEmployeeId) VALUES (6,'1244', N'Jesse', N'E', N'Holcomb',2)
 INSERT [dbo].[Employee] ([EmployeeId], EmployeeCardNumber, [FirstName], [MiddleInitial], [LastName], TypeEmployeeId) VALUES (7,'1254', N'Hamilton', N'V', N'Rice',2)
 INSERT [dbo].[Employee] ([EmployeeId], EmployeeCardNumber, [FirstName], [MiddleInitial], [LastName], TypeEmployeeId) VALUES (8,'1264', N'Jonah', N'L', N'Guzman',2)

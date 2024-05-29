@@ -3,7 +3,7 @@ NAME: Andrii Lebid
 DATE: 05/27/2024
 PURPOSE: Advatek System
 Description: Simple Time And Attendance System / Stored Procedures
-Version: 1.0
+Version: 1.3
 */
 
 
@@ -75,6 +75,23 @@ BEGIN
 END
 
 GO
+
+
+CREATE OR ALTER PROC [dbo].spGetEmployeeIdByCardNumber
+@CardNumber AS INT
+AS
+BEGIN
+	BEGIN TRY
+		SELECT EmployeeId FROM Employee WHERE EmployeeCardNumber = @CardNumber
+	END TRY
+	BEGIN CATCH
+	;THROW
+	END CATCH
+END
+
+GO
+
+
 
 CREATE OR ALTER PROC [dbo].[spAddEmployee]
 	@EmployeeId AS INT OUTPUT,
@@ -162,6 +179,20 @@ END
 GO
 
 -- Scan procedures
+
+CREATE OR ALTER PROC [dbo].[spGetTypeScan]
+AS
+BEGIN
+	BEGIN TRY
+		SELECT * FROM ScanType
+	END TRY
+	BEGIN CATCH
+	;THROW
+	END CATCH
+END
+
+GO
+
 
 CREATE OR ALTER PROC [dbo].[spSearchScanByEmployeeId]
 @EmployeeId AS INT
