@@ -208,6 +208,27 @@ END
 
 GO
 
+
+
+CREATE OR ALTER PROC [dbo].[spSearchLastScanByEmployeeId]
+@EmployeeId AS INT
+AS
+BEGIN
+	BEGIN TRY
+		SELECT TOP 1 * 
+		FROM RawScan 
+		WHERE EmployeeId = @EmployeeId
+		Order By RawScanID Desc
+	END TRY
+	BEGIN CATCH
+	;THROW
+	END CATCH
+END
+
+GO
+
+
+
 CREATE OR ALTER PROC [dbo].[spSearchScanByDate]
     @StartDate AS DATETIME2 = NULL,
     @EndDate AS DATETIME2 = NULL

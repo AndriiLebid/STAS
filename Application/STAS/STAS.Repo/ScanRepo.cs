@@ -41,10 +41,6 @@ namespace STAS.Repo
             }
 
             return scan;
-
-
-
-
         }
 
         public List<Scan> SearchScanByEmployeeId(int employeeId)
@@ -60,7 +56,31 @@ namespace STAS.Repo
 
             if (dt != null)
             {
-                return  dt.AsEnumerable().Select(row => PopulateScan(row)).ToList();
+                return dt.AsEnumerable().Select(row => PopulateScan(row)).ToList();
+            }
+            else
+            {
+                return scans;
+            }
+        }
+
+
+
+
+        public Scan GetLastScan(int employeeId)
+        {
+            List<Parm> parms = new()
+            {
+                new Parm("@EmployeeId", SqlDbType.Int, employeeId),
+            };
+
+            DataTable dt = db.Execute("spSearchLastScanByEmployeeId", parms);
+
+            Scan scans = new Scan();
+
+            if (dt != null)
+            {
+                return PopulateScan(dt.Rows[0]);
             }
             else
             {
@@ -104,7 +124,7 @@ namespace STAS.Repo
         private Scan PopulateScan(DataRow dataRow)
         {
             Scan scan = new Scan();
-            scan.ScanId = Convert.ToInt32(dataRow["ScanId"]);
+            scan.ScanId = Convert.ToInt32(dataRow["RawScanId"]);
             scan.EmployeeId = Convert.ToInt32(dataRow["EmployeeId"]);
             scan.ScanType = Convert.ToInt32(dataRow["ScanType"]);
             scan.ScanDate = Convert.ToDateTime(dataRow["ScanDate"]); 

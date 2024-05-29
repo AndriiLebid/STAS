@@ -48,7 +48,19 @@ namespace STAS.API.Controllers
                 scan.ScanType = scanTypeList[0].TypeId;
                 scan.EmployeeId = (int)empId;
 
-                var scanOut = service.AddScanRecord(scan);
+
+                Scan scanOut = new Scan();
+
+                try
+                {
+                    scanOut = service.AddScanRecord(scan);
+                }
+                catch (Exception ex) { 
+
+                    return BadRequest(ex.Message);
+
+                }
+                
                 return Ok(scanOut);
             }
             catch (Exception)

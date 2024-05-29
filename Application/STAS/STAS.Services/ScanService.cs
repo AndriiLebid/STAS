@@ -21,8 +21,18 @@ namespace STAS.Services
         #region Public Methods
         public Scan AddScanRecord(Scan scan)
         {
-            return repo.AddScanRecord(scan);
+            if (ValidationScan(scan))
+            {
+                return repo.AddScanRecord(scan);
+            }
+            else
+            {
+                throw new Exception("RawScan Validation error happend");
+            }
+ 
         }
+
+       
 
         public List<Scan> SearchScanByEmployeeId(int employeeId)
         {
@@ -41,6 +51,15 @@ namespace STAS.Services
 
         #region Private Methods
 
+        private bool ValidationScan(Scan scan)
+        {
+            Scan lastScan = repo.GetLastScan(scan.EmployeeId);
+            if (lastScan == null) return true;
+
+            if (lastScan.ScanDate < scan.ScanDate && lastScan.ScanType != scan.ScanType) return true;
+            
+            return false;
+        }
 
         #endregion
 
