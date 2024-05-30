@@ -1,5 +1,5 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
@@ -20,3 +20,24 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.main {
+    flex-grow: 1;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3)), url('/lib/images/background.png');
+    background-size: cover;
+    background-position: center;
+    padding: 20px 0;
+    min-height: 70vh;
+}
+
+footer {
+    margin-top: auto;
+    background-color: black;
+    color: white;
+    padding: 20px 0;
+}
+
+.footer, .footer ul li a {
+    line-height: normal;
+}
+
