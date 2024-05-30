@@ -43,6 +43,29 @@ namespace STAS.Repo
             return scan;
         }
 
+
+        public async Task<Scan> AddScanRecordAsync(Scan scan)
+        {
+            List<Parm> parms = new()
+            {
+                new Parm("@ScanId", SqlDbType.Int, null, 0, ParameterDirection.Output),
+                new Parm("@EmployeeId", SqlDbType.NVarChar, scan.EmployeeId),
+                new Parm("@ScanTypeId", SqlDbType.Int, scan.ScanType),
+                new Parm("@ScanDate", SqlDbType.DateTime2, DateTime.Now),
+            };
+
+            if (await db.ExecuteNonQueryAsync("spAddScan", parms) > 0)
+            {
+                scan.ScanId = (int?)parms.FirstOrDefault(p => p.Name == "@ScanId")?.Value ?? 0;
+            }
+            else
+            {
+                throw new DataException("There was an error adding a RowScan.");
+            }
+
+            return scan;
+        }
+
         public List<Scan> SearchScanByEmployeeId(int employeeId)
         {
             List<Parm> parms = new()
@@ -88,7 +111,28 @@ namespace STAS.Repo
             }
         }
 
-       
+        public async Task<Scan> GetLastScanAsync(int employeeId)
+        {
+            List<Parm> parms = new()
+            {
+                new Parm("@EmployeeId", SqlDbType.Int, employeeId),
+            };
+
+            DataTable dt = await db.ExecuteAsync("spSearchLastScanByEmployeeId", parms);
+
+            Scan scans = new Scan();
+
+            if (dt != null)
+            {
+                return PopulateScan(dt.Rows[0]);
+            }
+            else
+            {
+                return scans;
+            }
+        }
+
+
 
         public List<Scan> SearchScanByDate(DateTime? startDate, DateTime? endDate)
         {

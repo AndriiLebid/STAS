@@ -32,7 +32,20 @@ namespace STAS.Services
  
         }
 
-       
+        public async Task<Scan> AddScanRecordAsynk(Scan scan)
+        {
+            if (ValidationScan(scan))
+            {
+                return await repo.AddScanRecordAsync(scan);
+            }
+            else
+            {
+                throw new Exception("RawScan Validation error happend");
+            }
+
+        }
+
+
 
         public List<Scan> SearchScanByEmployeeId(int employeeId)
         {
@@ -42,6 +55,17 @@ namespace STAS.Services
         public List<Scan> SearchScanByDate(DateTime? startDate, DateTime? endDate)
         {
             return repo.SearchScanByDate(startDate, endDate);
+        }
+        
+
+        public Scan SearchLastScanByEmployeeId(int employeeId)
+        {
+            return repo.GetLastScan(employeeId);
+        }
+
+        public async Task<Scan> SearchLastScanByEmployeeIdAsync(int employeeId)
+        {
+            return await repo.GetLastScanAsync(employeeId);
         }
 
 

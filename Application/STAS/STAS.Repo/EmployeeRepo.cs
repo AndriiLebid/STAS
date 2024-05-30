@@ -91,6 +91,29 @@ namespace STAS.Repo
             }
         }
 
+        public async Task<Employee> SearchEmployeeByIdAsync(int id)
+        {
+
+            List<Parm> parms = new()
+            {
+                new Parm("@EmployeeId", SqlDbType.Int, id),
+            };
+
+            DataTable dt = await db.ExecuteAsync("spSearchEmployeesById", parms);
+
+            Employee emp = new Employee();
+
+            if (dt.Rows.Count != 0)
+            {
+                return PopulateEmployee(dt.Rows[0]);
+
+            }
+            else
+            {
+                return emp;
+            }
+        }
+
         public Employee SearchEmployeeByEmployeeNumber(string num)
         {
 

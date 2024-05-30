@@ -49,6 +49,11 @@ namespace STAS.Services
                 return repo.SearchEmployeeById(id);
         }
 
+        public async Task<Employee> SearchEmployeeByIdAsync(int id)
+        {
+            return await repo.SearchEmployeeByIdAsync(id);
+        }
+
 
         public Employee SearchEmployeeByCardNumber(string num)
         {
