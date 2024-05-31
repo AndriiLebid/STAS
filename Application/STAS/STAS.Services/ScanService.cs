@@ -52,6 +52,11 @@ namespace STAS.Services
             return repo.SearchScanByEmployeeId(employeeId);
         }
 
+        public async Task<List<Scan>> SearchScanByEmployeeIdAsync(int employeeId)
+        {
+            return await repo.SearchScanByEmployeeIdAsync(employeeId);
+        }
+
         public List<Scan> SearchScanByDate(DateTime? startDate, DateTime? endDate)
         {
             return repo.SearchScanByDate(startDate, endDate);

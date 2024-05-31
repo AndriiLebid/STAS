@@ -1,0 +1,75 @@
+﻿@model IEnumerable<STAS.Model.Employee>
+
+@{
+    ViewData["Title"] = "Employees List";
+}
+
+<div class="col-md-12">
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger text-center">
+            @TempData["Error"]
+        </div>
+    }
+</div>
+
+
+<div class="col-md-12">
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success text-center">
+            @TempData["Success"]
+        </div>
+    }
+</div>
+
+<h1>Employees List</h1>
+
+<p>
+    <a class="btn btn-success" asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.EmployeeId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EmployeeNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FullName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.EmployeeId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EmployeeNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FullName)
+            </td>
+
+            <td>
+                    <div style="display: flex; gap: 5px;">
+                        <div class="btn btn-warning">@Html.ActionLink("Edit", "Edit", new { id = item.EmployeeId }, new { /* @class = "text-light", */ style = "text-decoration: none;" })</div>
+                        <div class="btn btn-info">@Html.ActionLink("Details", "Details", new { id = item.EmployeeId }, new { @class = "text-light", style = "text-decoration: none;" })</div>
+                        <div >
+                            @using (Html.BeginForm("Inactive", "Employee", FormMethod.Post))
+                            {
+                                @Html.Hidden("id", item.EmployeeId)
+                                <input class="btn btn-light" type="submit" value="Inactive" />
+                            }
+                        </div>
+                    </div>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

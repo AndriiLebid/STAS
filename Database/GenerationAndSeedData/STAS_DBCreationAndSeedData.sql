@@ -172,8 +172,9 @@ GO
  
 INSERT INTO [EmployeeType] (TypeEmployeeId, TypeEmployeeName)
 VALUES 
-	(1, 'Active'),
-	(2, 'Inactive')
+	(1, 'Inactive'),
+	(2, 'Active')
+	
  
 
 SET IDENTITY_INSERT [dbo].[EmployeeType] OFF 

@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/STAS.Web.styles.css" asp-append-version="true" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-secondary">
     <header>
@@ -23,8 +24,22 @@
                             <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Manage Time</a>
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Search</a>
                         </li>
+                        
+                        <li class="nav-item dropdown me-3">
+                            <a class="nav-link dropdown-toggle text-white" href="#" id="attendanceBlockDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Employee
+                            </a>
+                            <ul class="dropdown-menu bg-light bg-opacity-75" aria-labelledby="attendanceBlockDropdown">
+                                <li><a class="dropdown-item" asp-controller="Employee" asp-action="Index" style="color: #5033A2;"><i class="fa-solid fa-list icon-spacing"></i> List</a></li>
+                                <li><a class="dropdown-item" asp-controller="Employee" asp-action="Create" style="color: #5033A2;"><i class="fa-solid fa-plus-circle icon-spacing"></i> Create</a></li>
+                                <li><a class="dropdown-item" asp-controller="Employee" asp-action="Detail" style="color: #5033A2;"><i class="fa-solid fa-info-circle icon-spacing"></i> Detail</a></li>
+                            </ul>
+                        </li>
+                       
+
+
                     </ul>
                 </div>
             </div>
@@ -37,8 +52,25 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
-            <center>&copy; 2024 - STAS</center>
+        <div class="container" >
+@*            <div class="row">
+                <div class="col-12"> *@
+                    <div class="row mt-3">
+                        <div class="col-md-6 col-sm-12">
+                            <ul class="list-unstyled d-flex align-items-center justify-content-center">
+                                <li>&copy; 2024 - STAS</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <a href="https://facebook.com" class="nav-link fs-3 text-white"><i class="fa-brands fa-facebook"></i></a>
+                                <a href="https://twitter.com" class="nav-link fs-3 text-white"><i class="fa-brands fa-twitter"></i></a>
+                                <a href="https://instagram.com" class="nav-link fs-3 text-white"><i class="fa-brands fa-instagram"></i></a>
+                            </div>
+                        </div>
+                    </div>
+@*                 </div>
+            </div> *@
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

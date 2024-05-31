@@ -1,0 +1,92 @@
+﻿@model STAS.Web.Models.EmployeeWithScans
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Employee Details</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Employee.EmployeeId)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Employee.EmployeeId)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Employee.EmployeeNumber)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Employee.EmployeeNumber)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Employee.FirstName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Employee.FirstName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Employee.MiddleInitial)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Employee.MiddleInitial)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Employee.LastName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Employee.LastName)
+        </dd>
+    </dl>
+</div>
+
+<table class="table">
+    @if (Model.Scans!.Count == 0)
+    {
+        <tr>
+            <td>This order don't have items.</td>
+        </tr>
+    }
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Scans![0].ScanId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Scans![0].ScanDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Scans![0].ScanType)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Scans)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ScanId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ScanDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ScanType)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+
+
+
+<div>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Employee.EmployeeId }) |
+    <a asp-action="Index">Back to List</a>
+</div>

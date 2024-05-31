@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,11 +11,12 @@ namespace STAS.Model
 {
     public class Employee : BaseEntities
     {
+        [Display(Name = "Employee Id")]
         public int EmployeeId { get; set; }
 
         [Required(ErrorMessage = "Employee Number is required.")]
         [StringLength(4, MinimumLength = 4, ErrorMessage = "Employee Number must be 4 characters long.")]
-        [Display(Name = "First Name")]
+        [Display(Name = "Employee Card Number")]
         public string? EmployeeNumber { get; set; }
 
         [Required(ErrorMessage = "First name is required.")]
@@ -32,6 +35,18 @@ namespace STAS.Model
 
         [Display(Name = "Type Employee")]
         public int TypeEmployeeId { get; set; }
+
+        public byte[]? RecordVersion { get; set; }
+
+        [NotMapped]
+        [Display(Name = "Full Name")]
+        public string? FullName 
+        {
+            get 
+            {
+                return $"{FirstName} {MiddleInitial} {LastName}";
+            }
+        }
 
 
     }

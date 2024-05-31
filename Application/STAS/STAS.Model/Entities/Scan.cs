@@ -13,12 +13,15 @@ namespace STAS.Model
         public int ScanId { get; set; }
 
         [Required(ErrorMessage = "Employee Id is required.")]
+        [Display(Name = "Employee Id")]
         public int EmployeeId { get; set; }
 
         [Required(ErrorMessage = "Scan Date is required.")]
+        [Display(Name = "Scan Date")]
         public DateTime ScanDate { get; set; }
 
         [Required(ErrorMessage = "Scan Type is required.")]
+        [Display(Name = "Scan Type")]
         public int ScanType { get; set; }
 
     }

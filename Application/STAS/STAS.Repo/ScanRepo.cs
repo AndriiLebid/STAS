@@ -87,6 +87,27 @@ namespace STAS.Repo
             }
         }
 
+        public async Task<List<Scan>> SearchScanByEmployeeIdAsync(int employeeId)
+        {
+            List<Parm> parms = new()
+            {
+                new Parm("@EmployeeId", SqlDbType.Int, employeeId),
+            };
+
+            DataTable dt = await db.ExecuteAsync("spSearchScanByEmployeeId", parms);
+
+            List<Scan> scans = new List<Scan>();
+
+            if (dt != null)
+            {
+                return dt.AsEnumerable().Select(row => PopulateScan(row)).ToList();
+            }
+            else
+            {
+                return scans;
+            }
+        }
+
 
 
 

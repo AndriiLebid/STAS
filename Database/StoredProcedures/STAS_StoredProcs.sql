@@ -47,6 +47,19 @@ GO
 -- Employee procedures
 
 
+CREATE OR ALTER PROC [dbo].[spGetAllEmployees]
+AS
+BEGIN
+	BEGIN TRY
+		SELECT * FROM Employee
+	END TRY
+	BEGIN CATCH
+	;THROW
+	END CATCH
+END
+
+GO
+
 
 CREATE OR ALTER PROC [dbo].[spSearchEmployeesById]
 @EmployeeId AS INT
@@ -279,3 +292,5 @@ BEGIN
 END
 
 GO
+
+
