@@ -10,12 +10,14 @@ Version: 1.3
 USE [STAS-A];
 GO
 
--- User Login
+-- User Login Procedures
+---------------------------------
+
+-- Serche user login and Password
 
 CREATE OR ALTER PROC [dbo].[spLogin]
 @UserName AS NVARCHAR(30),
 @Password AS NVARCHAR(64)
-
 AS
 BEGIN
 	BEGIN TRY
@@ -28,6 +30,8 @@ BEGIN
 END
 
 GO
+
+-- Get password salt
 
 CREATE OR ALTER PROC [dbo].[spGetPasswordSalt]
 @UserName AS NVARCHAR(30)
@@ -45,7 +49,9 @@ GO
 
 
 -- Employee procedures
+-----------------------------------------
 
+-- Get all Employee
 
 CREATE OR ALTER PROC [dbo].[spGetAllEmployees]
 AS
@@ -61,6 +67,8 @@ END
 GO
 
 
+--Get employee be id
+
 CREATE OR ALTER PROC [dbo].[spSearchEmployeesById]
 @EmployeeId AS INT
 AS
@@ -74,6 +82,8 @@ BEGIN
 END
 
 GO
+
+--Get employee be card number
 
 CREATE OR ALTER PROC [dbo].[spSearchEmployeesByNumber]
 @EmployeeCardNumber AS INT
@@ -89,6 +99,7 @@ END
 
 GO
 
+-- Get employee id by card number
 
 CREATE OR ALTER PROC [dbo].spGetEmployeeIdByCardNumber
 @CardNumber AS INT
@@ -104,7 +115,7 @@ END
 
 GO
 
-
+-- Create new employee
 
 CREATE OR ALTER PROC [dbo].[spAddEmployee]
 	@EmployeeId AS INT OUTPUT,
@@ -146,6 +157,7 @@ END
 
 GO
 
+-- Update employee
 
 CREATE OR ALTER PROC [dbo].[spUpdateEmployee]
 	@EmployeeId AS INT,
@@ -192,6 +204,9 @@ END
 GO
 
 -- Scan procedures
+-------------------------------
+
+-- Get all scan types
 
 CREATE OR ALTER PROC [dbo].[spGetTypeScan]
 AS
@@ -206,6 +221,7 @@ END
 
 GO
 
+-- Get all Scans by employee id
 
 CREATE OR ALTER PROC [dbo].[spSearchScanByEmployeeId]
 @EmployeeId AS INT
@@ -221,7 +237,7 @@ END
 
 GO
 
-
+-- Get last Scans by employee id
 
 CREATE OR ALTER PROC [dbo].[spSearchLastScanByEmployeeId]
 @EmployeeId AS INT
@@ -240,7 +256,7 @@ END
 
 GO
 
-
+-- Get Scans by  Date
 
 CREATE OR ALTER PROC [dbo].[spSearchScanByDate]
     @StartDate AS DATETIME2 = NULL,
@@ -258,6 +274,8 @@ BEGIN
     END CATCH
 END
 GO
+
+-- Add new scan
 
 CREATE OR ALTER PROC [dbo].[spAddScan]
 	@ScanId AS INT OUTPUT,

@@ -21,29 +21,12 @@ namespace STAS.Repo
 
         #region Public Methods
 
-        public Scan AddScanRecord(Scan scan)
-        {
-            List<Parm> parms = new()
-            {
-                new Parm("@ScanId", SqlDbType.Int, null, 0, ParameterDirection.Output),
-                new Parm("@EmployeeId", SqlDbType.NVarChar, scan.EmployeeId),
-                new Parm("@ScanTypeId", SqlDbType.Int, scan.ScanType),
-                new Parm("@ScanDate", SqlDbType.DateTime2, DateTime.Now),
-            };
-
-            if (db.ExecuteNonQuery("spAddScan", parms) > 0)
-            {
-                scan.ScanId = (int?)parms.FirstOrDefault(p => p.Name == "@ScanId")?.Value ?? 0;
-            }
-            else
-            {
-                throw new DataException("There was an error adding a RowScan.");
-            }
-
-            return scan;
-        }
-
-
+       /// <summary>
+       /// Add new scan
+       /// </summary>
+       /// <param name="scan"></param>
+       /// <returns></returns>
+       /// <exception cref="DataException"></exception>
         public async Task<Scan> AddScanRecordAsync(Scan scan)
         {
             List<Parm> parms = new()
@@ -66,6 +49,11 @@ namespace STAS.Repo
             return scan;
         }
 
+        /// <summary>
+        /// Get Scan By Employee Id
+        /// </summary>
+        /// <param name="employeeId"></param>
+        /// <returns></returns>
         public List<Scan> SearchScanByEmployeeId(int employeeId)
         {
             List<Parm> parms = new()
@@ -87,6 +75,12 @@ namespace STAS.Repo
             }
         }
 
+
+        /// <summary>
+        /// Search Scan By Employee Id
+        /// </summary>
+        /// <param name="employeeId"></param>
+        /// <returns></returns>
         public async Task<List<Scan>> SearchScanByEmployeeIdAsync(int employeeId)
         {
             List<Parm> parms = new()
@@ -110,7 +104,11 @@ namespace STAS.Repo
 
 
 
-
+        /// <summary>
+        /// Get last scan
+        /// </summary>
+        /// <param name="employeeId"></param>
+        /// <returns></returns>
         public Scan GetLastScan(int employeeId)
         {
             List<Parm> parms = new()
@@ -154,7 +152,12 @@ namespace STAS.Repo
         }
 
 
-
+        /// <summary>
+        /// Search Scan By Date
+        /// </summary>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns></returns>
         public List<Scan> SearchScanByDate(DateTime? startDate, DateTime? endDate)
         {
             List<Parm> parms = new()
@@ -186,6 +189,11 @@ namespace STAS.Repo
 
         #region Private Methods
 
+        /// <summary>
+        /// Populate Scan Object
+        /// </summary>
+        /// <param name="dataRow"></param>
+        /// <returns></returns>
         private Scan PopulateScan(DataRow dataRow)
         {
             Scan scan = new Scan();

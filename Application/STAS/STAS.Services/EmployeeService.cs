@@ -22,20 +22,11 @@ namespace STAS.Services
 
 
         #region Public Methods
-
-        public Employee AddEmployee(Employee emp)
-        {
-
-            if (ValidateEmployee(emp))
-            {
-                return repo.AddEmployee(emp);
-            }
-
-            return emp;
-
-        }
-
-
+        /// <summary>
+        /// Create new employee 
+        /// </summary>
+        /// <param name="emp"></param>
+        /// <returns></returns>
         public async Task<Employee> AddEmployeeAsync(Employee emp)
         {
 
@@ -48,18 +39,11 @@ namespace STAS.Services
 
         }
 
-        public Employee UpdateEmployee(Employee emp)
-        {
-
-            if (ValidateEmployee(emp))
-            {
-                return repo.UpdateEmployee(emp);
-            }
-
-            return emp;
-
-        }
-
+        /// <summary>
+        /// Update employee
+        /// </summary>
+        /// <param name="emp"></param>
+        /// <returns></returns>
         public async Task<Employee> UpdateEmployeeAsync(Employee emp)
         {
 
@@ -72,22 +56,21 @@ namespace STAS.Services
 
         }
 
-        public Employee SearchEmployeeById(int id)
-        {
-                return repo.SearchEmployeeById(id);
-        }
-
+        /// <summary>
+        /// Get Employee By Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<Employee> SearchEmployeeByIdAsync(int id)
         {
             return await repo.SearchEmployeeByIdAsync(id);
         }
 
 
-        public Employee SearchEmployeeByCardNumber(string num)
-        {
-            return repo.SearchEmployeeByEmployeeNumber(num);
-        }
-
+        /// <summary>
+        /// Get All employee
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<Employee>> GetAllEmployeesAsync()
         {
             
@@ -103,7 +86,11 @@ namespace STAS.Services
         #endregion
 
         #region Private Methods
-
+        /// <summary>
+        /// Validate employee
+        /// </summary>
+        /// <param name="employee"></param>
+        /// <returns></returns>
         private bool ValidateEmployee(Employee employee)
         {
 
@@ -112,6 +99,10 @@ namespace STAS.Services
             return employee.Errors.Count == 0;
         }
 
+        /// <summary>
+        /// Validate card number
+        /// </summary>
+        /// <param name="employee"></param>
         private void ValidateCardNumber(Employee employee)
         {
             

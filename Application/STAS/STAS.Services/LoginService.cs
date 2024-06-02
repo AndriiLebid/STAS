@@ -18,6 +18,11 @@ namespace STAS.Services
 
         #region  Public Methods
 
+        /// <summary>
+        /// Get user salt
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public async Task<LoginUser?> Login(LoginDTO user)
         {
             byte[] salt = repo.GetUserSalt(user.UserName);

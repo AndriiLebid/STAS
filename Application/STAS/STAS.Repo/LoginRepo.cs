@@ -12,8 +12,20 @@ namespace STAS.Repo
 {
     public class LoginRepo
     {
+        #region Private Fields
+
         private readonly DataAccess db = new();
 
+        #endregion
+
+        #region Public Methods
+
+
+        /// <summary>
+        /// Get user password salt
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
         public byte[] GetUserSalt(string? userName)
         {
             List<Parm> parms = new()
@@ -27,6 +39,12 @@ namespace STAS.Repo
 
         }
 
+
+        /// <summary>
+        /// Login user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public async Task<LoginUser?> Login(LoginDTO user)
         {
             DataTable dt = await db.ExecuteAsync("spLogin",
@@ -49,6 +67,6 @@ namespace STAS.Repo
             };
         }
 
-
+        #endregion
     }
 }

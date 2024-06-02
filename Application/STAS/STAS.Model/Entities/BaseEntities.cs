@@ -9,7 +9,6 @@ namespace STAS.Model
     public class BaseEntities
     {
         public List<ValidationError> Errors { get; set; } = new();
-
         public void AddError(ValidationError error)
         {
             Errors.Add(error);

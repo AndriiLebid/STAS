@@ -21,30 +21,12 @@ namespace STAS.Repo
 
         #region Public Methods
 
-        public Employee AddEmployee(Employee emp)
-        {
-
-            List<Parm> parms = new()
-            {
-                new Parm("@EmployeeId", SqlDbType.Int, null, 0, ParameterDirection.Output),
-                new Parm("@FirstName", SqlDbType.NVarChar, emp.FirstName, 30),
-                new Parm("@MiddleInitial", SqlDbType.NVarChar, (object)emp.MiddleInitial ?? DBNull.Value, 1),
-                new Parm("@LastName", SqlDbType.NVarChar, emp.LastName, 30),
-                new Parm("@EmployeeTypeId", SqlDbType.Int, (object)emp.TypeEmployeeId)
-            };
-
-            if (db.ExecuteNonQuery("spAddEmployee", parms) > 0)
-            {
-                emp.EmployeeId = (int?)parms.FirstOrDefault(p => p.Name == "@EmployeeId")?.Value ?? 0;
-            }
-            else
-            {
-                throw new DataException("There was an error adding an employee.");
-            }
-
-            return emp; 
-        
-        }
+        /// <summary>
+        /// Add new employee
+        /// </summary>
+        /// <param name="emp"></param>
+        /// <returns></returns>
+        /// <exception cref="DataException"></exception>
 
         public async Task<Employee> AddEmployeeAsync(Employee emp)
         {
@@ -73,29 +55,12 @@ namespace STAS.Repo
         }
 
 
-        public Employee UpdateEmployee(Employee emp)
-        {
-
-            List<Parm> parms = new()
-            {
-                new Parm("@EmployeeId", SqlDbType.Int, emp.EmployeeId),
-                new Parm("@FirstName", SqlDbType.NVarChar, emp.FirstName, 30),
-                new Parm("@MiddleInitial", SqlDbType.NVarChar, (object)emp.MiddleInitial ?? DBNull.Value, 1),
-                new Parm("@LastName", SqlDbType.NVarChar, emp.LastName, 30),
-                new Parm("@EmployeeCardNumber", SqlDbType.NVarChar, emp.EmployeeNumber, 4),
-                new Parm("@EmployeeTypeId", SqlDbType.Int, (object)emp.TypeEmployeeId),
-                new Parm("@RecordVersion", SqlDbType.Timestamp, emp.RecordVersion)
-            };
-
-            if (db.ExecuteNonQuery("spUpdateEmployee", parms) != 1)
-            {
-                throw new DataException("An employee update error occurred.");
-            }
-
-            return emp;
-
-        }
-
+        /// <summary>
+        /// Update Employee
+        /// </summary>
+        /// <param name="emp"></param>
+        /// <returns></returns>
+        /// <exception cref="DataException"></exception>
         public async Task<Employee> UpdateEmployeeAsync(Employee emp)
         {
 
@@ -119,29 +84,11 @@ namespace STAS.Repo
 
         }
 
-        public Employee SearchEmployeeById(int id)
-        {
-
-            List<Parm> parms = new()
-            {
-                new Parm("@EmployeeId", SqlDbType.Int, id),
-            };
-
-            DataTable dt = db.Execute("spSearchEmployeesById", parms);
-
-            Employee emp = new Employee();
-
-            if (dt != null) 
-            {
-                return PopulateEmployee(dt.Rows[0]);
-
-            }
-            else
-            {
-                return emp;
-            }
-        }
-
+       /// <summary>
+       /// Get employee by ID
+       /// </summary>
+       /// <param name="id"></param>
+       /// <returns></returns>
         public async Task<Employee> SearchEmployeeByIdAsync(int id)
         {
 
@@ -165,7 +112,10 @@ namespace STAS.Repo
             }
         }
 
-
+        /// <summary>
+        /// Get all employee
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<Employee>> GetAllEmployeesAsync()
         {
 
@@ -183,7 +133,11 @@ namespace STAS.Repo
             }
         }
 
-
+        /// <summary>
+        /// Search Employee By Employee Number
+        /// </summary>
+        /// <param name="num"></param>
+        /// <returns></returns>
         public Employee SearchEmployeeByEmployeeNumber(string num)
         {
 
@@ -213,7 +167,11 @@ namespace STAS.Repo
 
 
         #region Private Methods
-
+        /// <summary>
+        /// Populate Employee object
+        /// </summary>
+        /// <param name="dataRow"></param>
+        /// <returns></returns>
         private Employee PopulateEmployee(DataRow dataRow)
         {
            Employee emp = new Employee();

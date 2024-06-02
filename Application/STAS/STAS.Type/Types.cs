@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 
 namespace STAS.Type
 {
-
+    /// <summary>
+    /// Parameter for store procedure
+    /// </summary>
     public class Parm
     {
         public string? Name { get; set; }
@@ -26,6 +28,9 @@ namespace STAS.Type
         }
     }
 
+    /// <summary>
+    /// Error type, need for validation
+    /// </summary>
     public enum ErrorType
     {
         Model, Business

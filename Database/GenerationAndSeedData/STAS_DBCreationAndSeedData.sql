@@ -9,7 +9,7 @@ Version: 1.3
 USE [STAS-A];
 GO 
 
--- DELETE Tables
+-- DELETE Tables if exist
 
 IF OBJECT_ID('[STAS-A].dbo.RawScan', 'U') IS NOT NULL
 DROP TABLE [STAS-A].dbo.RawScan;
@@ -101,9 +101,6 @@ END
 GO
 
 
-
-
-
 -- Create table Employee
 
 
@@ -165,7 +162,7 @@ GO
 --SEED TABLES
 -----------------------------------------------------------------------------------------------
 
- -- Add Roles
+ -- Add Employee Type
 
 SET IDENTITY_INSERT [dbo].[EmployeeType] ON 
 GO
@@ -175,10 +172,12 @@ VALUES
 	(1, 'Inactive'),
 	(2, 'Active')
 	
- 
-
 SET IDENTITY_INSERT [dbo].[EmployeeType] OFF 
 GO
+
+
+ -- Add Scan Type
+
 
 SET IDENTITY_INSERT [dbo].[ScanType] ON
 
@@ -190,6 +189,9 @@ VALUES
 SET IDENTITY_INSERT [dbo].[ScanType] OFF
 
 
+ -- Add Users
+
+
 SET IDENTITY_INSERT [dbo].[User] ON 
 
 INSERT [dbo].[User] ([UserId], [Password], [PasswordSalt], [UserName], [UserRole]) VALUES (1, N'd2a232d95451c7d6a4264ab1fec586560fb8cc6ff59f7ea542260293b1fe5395', 0xDE12A6FD00D1ADDDC5986C978BB1CDA8, N'Administrator','Admin')
@@ -198,6 +200,8 @@ INSERT [dbo].[User] ([UserId], [Password], [PasswordSalt], [UserName], [UserRole
 SET IDENTITY_INSERT [dbo].[User] OFF
 GO
 
+
+ -- Add Employees
 
 SET IDENTITY_INSERT [dbo].[Employee] ON 
 
@@ -220,6 +224,9 @@ INSERT [dbo].[Employee] ([EmployeeId], EmployeeCardNumber, [FirstName], [MiddleI
 
 SET IDENTITY_INSERT [dbo].[Employee] OFF
 GO
+
+
+ -- Add Employee RawScans
 
 SET IDENTITY_INSERT [dbo].[RawScan] ON 
 

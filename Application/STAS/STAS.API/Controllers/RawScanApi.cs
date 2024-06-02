@@ -3,6 +3,7 @@ using STAS.Services;
 using STAS.Model;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace STAS.API.Controllers
 {
@@ -10,10 +11,21 @@ namespace STAS.API.Controllers
     [ApiController]
     public class RawScanApi : ControllerBase
     {
+        #region Fields
+
         private readonly ScanService service = new();
         private readonly ListService list = new();
         private readonly EmployeeService employee = new();
 
+        #endregion
+
+        #region  Public Methods
+
+        /// <summary>
+        /// Endpoint for add new scan record
+        /// </summary>
+        /// <param name="scanIn"></param>
+        /// <returns></returns>
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -26,35 +38,35 @@ namespace STAS.API.Controllers
 
                 if (scanIn == null)
                 {
-                    return BadRequest("The RawScan is not specified.");
+                    return BadRequest("The RawScan is not specified in correct way.");
                 }
 
                 List<ScanType> scanTypeList = await list.GetTypeScan();
-                scanTypeList = scanTypeList.Where(d => d.TypeName == scanIn.ScanType.ToUpper()).ToList();
+                scanTypeList = scanTypeList.Where(d => d.TypeName.Equals(scanIn.ScanType.ToUpper())).ToList();
 
                 if (scanTypeList.Count == 0)
                 {
-                    return NotFound(new List<Scan>());
+                    return NotFound("Error Scan Type");
                 }
 
                 int? empId = await list.GetEmployeeIdByNumber(scanIn.EmployeeCardNumber);
 
                 if (empId == null)
                 {
-                    return NotFound(new List<Scan>());
+                    return NotFound("Wrong Employee");
                 }
 
-                Scan scan = new Scan();
+                Scan scan = new();
                 scan.ScanDate = scanIn.ScanDate;
                 scan.ScanType = scanTypeList[0].TypeId;
                 scan.EmployeeId = (int)empId;
 
 
-                Scan scanOut = new Scan();
+                Scan scanOut = new();
 
                 try
                 {
-                    scanOut = await service.AddScanRecordAsynk(scan);
+                    scanOut = await service.AddScanRecordAsync(scan);
                 }
                 catch (Exception ex) { 
 
@@ -71,6 +83,79 @@ namespace STAS.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Add list scan records to DB
+        /// </summary>
+        /// <param name="scanIn"></param>
+        /// <returns></returns>
+        [HttpPost("addListOfScans")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<List<Scan>>> SyncAllNewRecords(List<ScanApiDTO> scanInList)
+        {
+            try
+            {
+                List<Scan> scanOutList = new();
+                List<ScanType> scanTypeList = await list.GetTypeScan();
+                if (IsList(scanInList))
+                {
+                    return BadRequest("The RawScan is not specified or not a list.");
+                }
+
+                foreach (var sc in scanInList)
+                {
+                    var scanType = scanTypeList.FirstOrDefault(d => d.TypeName.Equals(sc.ScanType.ToUpper()));
+                    if (scanType == null)
+                    {
+                        return NotFound("Wrong Scan Type");
+                    }
+
+                    int? empId = await list.GetEmployeeIdByNumber(sc.EmployeeCardNumber);
+
+                    if (empId == null)
+                    {
+                        return NotFound("Wrong Employee");
+                    }
+
+                    var scan = new Scan
+                    {
+                        ScanDate = sc.ScanDate,
+                        ScanType = scanType.TypeId,
+                        EmployeeId = (int)empId
+                    };
+
+                    scan.ScanDate = sc.ScanDate;
+                    scan.ScanType = scanType.TypeId;
+                    scan.EmployeeId = (int)empId;
+
+                    try
+                    {
+                        var scanOut = await service.AddScanRecordAsync(scan);
+                        scanOutList.Add(scanOut);
+                    }
+                    catch (Exception ex)
+                    {
+                        return BadRequest(ex.Message);
+                    }
+
+                }
+
+                return Ok(scanOutList);
+            }
+            catch (Exception)
+            {
+                return Problem(title: "An internal error has occurred. Please contact the system administrator");
+
+            }
+        }
+
+
+        /// <summary>
+        /// Get Last Scan record By EmployeeId
+        /// </summary>
+        /// <param name="employeeId"></param>
+        /// <returns></returns>
 
         [HttpGet("getLastScanByEmployeeId")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -114,6 +199,24 @@ namespace STAS.API.Controllers
 
             }
         }
+
+        #endregion
+
+
+        #region  Private Methods
+        /// <summary>
+        /// Check parameter is a list
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        private bool IsList(object list)
+        {
+            if (list == null) return false;
+            return list is IList &&
+                   list.GetType().IsGenericType &&
+                   list.GetType().GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>));
+        }
+        #endregion
 
     }
 }

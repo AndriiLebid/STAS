@@ -10,6 +10,12 @@ namespace STAS.Services
 {
     public class PasswordUtility
     {
+
+        /// <summary>
+        /// Generate Salt for user
+        /// </summary>
+        /// <param name="length"></param>
+        /// <returns></returns>
         public static byte[] GenerateSalt(int length = 16)
         {
             byte[] salt = new byte[length];
@@ -22,6 +28,12 @@ namespace STAS.Services
 
         }
 
+        /// <summary>
+        /// Hash user password
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="salt"></param>
+        /// <returns></returns>
         public static string HashToSHA256(string input, byte[] salt)
         {
             using (SHA256 sha256 = SHA256.Create())
@@ -34,6 +46,12 @@ namespace STAS.Services
 
         }
 
+
+        /// <summary>
+        /// Validate password
+        /// </summary>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public static bool PasswordCheck(string password)
         {
             string pattern = @"^(?=.*[A-Z])(?=.*\d)(?=.*[^\w\d\s]).{6,}$";

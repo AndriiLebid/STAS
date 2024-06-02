@@ -22,6 +22,10 @@ namespace STAS.Repo
 
         #region Public Methods
 
+        /// <summary>
+        /// Get All Type Scans
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<ScanType>> GetTypeScan()
         {
             DataTable dt = db.Execute("spGetTypeScan");
@@ -35,6 +39,13 @@ namespace STAS.Repo
 
         }
 
+
+        /// <summary>
+        /// Get Employee Id By Number
+        /// </summary>
+        /// <param name="cardNumber"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public async Task<int> GetEmployeeIdByNumber(string cardNumber)
         {
             List<Parm> parms = new()

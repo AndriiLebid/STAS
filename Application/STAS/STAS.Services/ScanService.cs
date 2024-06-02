@@ -19,20 +19,14 @@ namespace STAS.Services
         #endregion
 
         #region Public Methods
-        public Scan AddScanRecord(Scan scan)
-        {
-            if (ValidationScan(scan))
-            {
-                return repo.AddScanRecord(scan);
-            }
-            else
-            {
-                throw new Exception("RawScan Validation error happend");
-            }
- 
-        }
 
-        public async Task<Scan> AddScanRecordAsynk(Scan scan)
+        /// <summary>
+        /// Add new scan record
+        /// </summary>
+        /// <param name="scan"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public async Task<Scan> AddScanRecordAsync(Scan scan)
         {
             if (ValidationScan(scan))
             {
@@ -45,13 +39,11 @@ namespace STAS.Services
 
         }
 
-
-
-        public List<Scan> SearchScanByEmployeeId(int employeeId)
-        {
-            return repo.SearchScanByEmployeeId(employeeId);
-        }
-
+        /// <summary>
+        /// Get Scan By Employee Id
+        /// </summary>
+        /// <param name="employeeId"></param>
+        /// <returns></returns>
         public async Task<List<Scan>> SearchScanByEmployeeIdAsync(int employeeId)
         {
             return await repo.SearchScanByEmployeeIdAsync(employeeId);
@@ -68,6 +60,11 @@ namespace STAS.Services
             return repo.GetLastScan(employeeId);
         }
 
+        /// <summary>
+        /// Search Last Sca nBy Employee Id
+        /// </summary>
+        /// <param name="employeeId"></param>
+        /// <returns></returns>
         public async Task<Scan> SearchLastScanByEmployeeIdAsync(int employeeId)
         {
             return await repo.GetLastScanAsync(employeeId);
@@ -79,7 +76,11 @@ namespace STAS.Services
 
 
         #region Private Methods
-
+        /// <summary>
+        /// Verification RawScan
+        /// </summary>
+        /// <param name="scan"></param>
+        /// <returns></returns>
         private bool ValidationScan(Scan scan)
         {
             Scan lastScan = repo.GetLastScan(scan.EmployeeId);
