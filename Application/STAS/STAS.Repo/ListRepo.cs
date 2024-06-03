@@ -39,6 +39,33 @@ namespace STAS.Repo
 
         }
 
+        /// <summary>
+        /// Get Next and Previous records for scan table
+        /// </summary>
+        /// <returns></returns>
+        public async Task<NCP> NCPScan(Scan sc)
+        {
+
+            List<Parm> parms = new()
+            {
+                new Parm("@ScanId", SqlDbType.Int, sc.ScanId),
+                new Parm("@EmployeeId", SqlDbType.Int, sc.EmployeeId),
+            };
+
+
+            DataTable dt = await db.ExecuteAsync("GetLCNScanRows", parms);
+
+            DataRow rw = dt.Rows[0];
+
+            return new NCP
+                   {
+                       NextRecord = Convert.ToInt32(rw["NextValue"]),
+                       CurrentRecord = Convert.ToInt32(rw["RawScanID"]),
+                       PreviousRecord = Convert.ToInt32(rw["PreviousValue"]),
+                   };
+
+        }
+
 
         /// <summary>
         /// Get Employee Id By Number

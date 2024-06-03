@@ -76,17 +76,19 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.ScanType)
                 </td>
+                <td>
+                    <div style="display: flex; gap: 5px;">
+                        <div class="btn btn-warning">@Html.ActionLink("Edit", "Edit", "Scan", new { id = item.ScanId }, new { style = "text-decoration: none;" })</div>
+                    </div>
+                </td>
             </tr>
         }
     </tbody>
 </table>
 
 
-
-
-
-
 <div>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Employee.EmployeeId }) |
-    <a asp-action="Index">Back to List</a>
+    @Html.ActionLink("Create Scan", "Create", "Scan", new { id = Model.Employee.EmployeeId }, new { @class = "btn btn-success", style = "text-decoration: none;" })
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Employee.EmployeeId }, new { @class = "btn btn-warning", style = "text-decoration: none;" })
+    <a class="btn btn-info" asp-action="Index">Back to List</a>
 </div>

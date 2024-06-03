@@ -27,6 +27,11 @@ namespace STAS.Services
             return await repo.GetTypeScan();
         }
 
+        public async Task<NCP> NCPScan(Scan scan)
+        {
+            return await repo.NCPScan(scan);
+        }
+
 
         /// <summary>
         /// Get Employee Id By Card Number

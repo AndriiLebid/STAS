@@ -237,6 +237,22 @@ END
 
 GO
 
+-- Get Scan by id
+
+CREATE OR ALTER PROC [dbo].[spGetScanById]
+@ScanId AS INT
+AS
+BEGIN
+	BEGIN TRY
+		SELECT * FROM RawScan WHERE RawScanID = @ScanId
+	END TRY
+	BEGIN CATCH
+	;THROW
+	END CATCH
+END
+
+GO
+
 -- Get last Scans by employee id
 
 CREATE OR ALTER PROC [dbo].[spSearchLastScanByEmployeeId]
@@ -311,4 +327,75 @@ END
 
 GO
 
+-- Update scan
 
+CREATE OR ALTER PROC [dbo].[spUpdateScan]
+	@ScanId AS INT,
+	@EmployeeId AS INT,
+	@ScanDate AS DATETIME2,
+	@ScanTypeId AS INT,
+	@RecordVersion ROWVERSION
+AS
+BEGIN
+	BEGIN TRY
+		DECLARE @CurrentRecordVersion ROWVERSION = (SELECT RawScan.RecordVersion FROM RawScan WHERE RawScanID = @ScanId);
+			IF @RecordVersion <> @CurrentRecordVersion
+				THROW 51002, 'The record has been updated since you last retrieved it.', 1;
+	
+	BEGIN TRANSACTION
+		UPDATE [dbo].[RawScan]
+		SET	
+			ScanDate = @ScanDate,
+			EmployeeId = @EmployeeId,
+			ScanType = @ScanTypeId
+		WHERE 
+			RawScanID = @ScanId
+
+
+		SET @ScanId = SCOPE_IDENTITY();
+		COMMIT TRANSACTION;
+
+	END TRY
+	BEGIN CATCH
+	IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
+	END CATCH
+END
+
+GO
+
+-- get next, current and previous rows
+
+CREATE OR ALTER PROC [dbo].[spGetLCNScanRows]
+@ScanId AS INT,
+@EmployeeId AS INT
+AS
+BEGIN
+	BEGIN TRY
+		WITH CTE AS (
+			SELECT rownum = ROW_NUMBER() OVER (ORDER BY RawScanID),
+			   RawScanID
+			FROM RawScan
+			WHERE EmployeeId = @EmployeeId
+		)
+		SELECT
+			prev.RawScanID AS PreviousValue,
+			CTE.RawScanID,
+			nex.RawScanID AS NextValue
+		FROM CTE
+			LEFT JOIN CTE prev ON prev.rownum = CTE.rownum - 1
+			LEFT JOIN CTE nex ON nex.rownum = CTE.rownum + 1
+		WHERE CTE.RawScanID = @ScanId;
+
+
+
+	END TRY
+	BEGIN CATCH
+	;THROW
+	END CATCH
+END
+
+GO
+
+[spGetLCNScanRows] 5, 2

@@ -233,9 +233,9 @@ SET IDENTITY_INSERT [dbo].[RawScan] ON
 INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanType) VALUES (1, 1, '2023-06-01 10:25:00', 1);
 INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanType) VALUES (2, 1, '2023-06-01 11:25:00', 1);
 INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanType) VALUES (3, 2, '2023-06-01 10:27:00', 1);
-INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanType) VALUES (4, 2, '2023-06-01 11:27:00', 1);
+INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanType) VALUES (4, 2, '2023-06-01 11:27:00', 2);
 INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanType) VALUES (5, 2, '2023-06-01 12:25:00', 1);
-INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanType) VALUES (6, 2, '2023-06-01 12:25:00', 1);
+INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanType) VALUES (6, 2, '2023-06-01 12:25:00', 2);
 
 
 SET IDENTITY_INSERT [dbo].[RawScan] OFF

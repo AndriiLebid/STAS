@@ -1,0 +1,51 @@
+﻿@model STAS.Web.Models.ScanAddEditVM
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit Scan Time</h1>
+
+<h4 class="text-warning">You can only change the date and time.</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input asp-for="scan.ScanId" class="form-control" type="hidden" />
+            <input asp-for="scan.ScanType" class="form-control" type="hidden" />
+            <input asp-for="scan.RecordVersion" class="form-control" type="hidden" />
+            <input asp-for="scan.EmployeeId" class="form-control" type="hidden" />
+
+            <div class="form-group">
+                <label asp-for="EmployeeName" class="control-label"></label>
+                <input asp-for="EmployeeName" class="form-control" disabled/>
+                <span asp-validation-for="EmployeeName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="scan.ScanDate" class="control-label"></label>
+                <input asp-for="scan.ScanDate" class="form-control" />
+                <span asp-validation-for="scan.ScanDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="scan.ScanType" class="control-label"></label>
+                <select asp-for="scan.ScanType" asp-items="Model.ScanTupesList" class="form-select" disabled>
+                   @*  <option>---Select Type---</option> *@
+                </select>
+                <span asp-validation-for="scan.ScanType" class="text-danger"></span>
+            </div>
+            <div class="form-group pt-4">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

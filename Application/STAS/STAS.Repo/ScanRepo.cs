@@ -50,6 +50,39 @@ namespace STAS.Repo
         }
 
         /// <summary>
+        /// Add new scan
+        /// </summary>
+        /// <param name="scan"></param>
+        /// <returns></returns>
+        /// <exception cref="DataException"></exception>
+        public async Task<Scan> UpdateRecordAsync(Scan scan)
+        {
+            List<Parm> parms = new()
+            {
+                new Parm("@ScanId", SqlDbType.Int, scan.ScanId),
+                new Parm("@EmployeeId", SqlDbType.NVarChar, scan.EmployeeId),
+                new Parm("@ScanTypeId", SqlDbType.Int, scan.ScanType),
+                new Parm("@ScanDate", SqlDbType.DateTime2, DateTime.Now),
+                new Parm("@RecordVersion", SqlDbType.Timestamp, scan.RecordVersion)
+            };
+
+            if (await db.ExecuteNonQueryAsync("spUpdateScan", parms) > 0)
+            {
+                scan.ScanId = (int?)parms.FirstOrDefault(p => p.Name == "@ScanId")?.Value ?? 0;
+            }
+            else
+            {
+                throw new DataException("There was an error adding a RowScan.");
+            }
+
+            return scan;
+        }
+
+
+
+
+
+        /// <summary>
         /// Get Scan By Employee Id
         /// </summary>
         /// <param name="employeeId"></param>
@@ -152,6 +185,28 @@ namespace STAS.Repo
         }
 
 
+        public async Task<Scan> GetScanByIdAsync(int scanId)
+        {
+            List<Parm> parms = new()
+            {
+                new Parm("@ScanId", SqlDbType.Int, scanId),
+            };
+
+            DataTable dt = await db.ExecuteAsync("spGetScanById", parms);
+
+            Scan scans = new Scan();
+
+            if (dt != null)
+            {
+                return PopulateScan(dt.Rows[0]);
+            }
+            else
+            {
+                return scans;
+            }
+        }
+
+
         /// <summary>
         /// Search Scan By Date
         /// </summary>
@@ -200,7 +255,8 @@ namespace STAS.Repo
             scan.ScanId = Convert.ToInt32(dataRow["RawScanId"]);
             scan.EmployeeId = Convert.ToInt32(dataRow["EmployeeId"]);
             scan.ScanType = Convert.ToInt32(dataRow["ScanType"]);
-            scan.ScanDate = Convert.ToDateTime(dataRow["ScanDate"]); 
+            scan.ScanDate = Convert.ToDateTime(dataRow["ScanDate"]);
+            scan.RecordVersion = (byte[])dataRow["RecordVersion"];
 
             return scan;
         }

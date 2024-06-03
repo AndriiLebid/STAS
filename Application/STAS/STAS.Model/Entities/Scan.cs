@@ -23,6 +23,7 @@ namespace STAS.Model
         [Required(ErrorMessage = "Scan Type is required.")]
         [Display(Name = "Scan Type")]
         public int ScanType { get; set; }
+        public byte[]? RecordVersion { get; set; }
 
     }
 }

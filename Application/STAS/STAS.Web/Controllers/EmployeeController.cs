@@ -63,7 +63,7 @@ namespace STAS.Web.Controllers
                     {
                         ScanId = sc.ScanId,
                         ScanDate = sc.ScanDate,
-                        ScanType = type.FirstOrDefault(t => t.TypeId == sc.ScanType).ToString()
+                        ScanType = type.FirstOrDefault(t => t.TypeId == sc.ScanType).TypeName
                     };
 
                     scansVm.Add(scanVM);
@@ -88,9 +88,7 @@ namespace STAS.Web.Controllers
             {
 
                 Employee employee = new Employee();
-
                 employee.TypeEmployeeId = 2;
-
 
                 return View(employee);
             }
@@ -129,7 +127,6 @@ namespace STAS.Web.Controllers
                 TempData["Success"] = "Employee Created successfully.";
                 return RedirectToAction("Index", "Employee");
 
-
             }
             catch (Exception ex)
             {
@@ -143,9 +140,7 @@ namespace STAS.Web.Controllers
         {
             try
             {
-
                 Employee employee = await service.SearchEmployeeByIdAsync(id);
-
                 return View(employee);
             }
             catch (Exception ex)
@@ -180,7 +175,6 @@ namespace STAS.Web.Controllers
                 }
                 TempData["Success"] = "Employee Updated successfully.";
                 return RedirectToAction("Index", "Employee");
-
 
             }
             catch (Exception ex)

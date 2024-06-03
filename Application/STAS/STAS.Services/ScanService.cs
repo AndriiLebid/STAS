@@ -15,6 +15,7 @@ namespace STAS.Services
         #region Private Fields
 
             private readonly ScanRepo repo = new();
+            private readonly ListService list = new();
 
         #endregion
 
@@ -38,6 +39,30 @@ namespace STAS.Services
             }
 
         }
+
+
+        /// <summary>
+        /// Update scan record
+        /// </summary>
+        /// <param name="scan"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public async Task<Scan> UpdateRecordAsync(Scan scan)
+        {
+            if (await ValidationScanUpdate(scan))
+            {
+                return await repo.UpdateRecordAsync(scan);
+            }
+            else
+            {
+                throw new Exception("RawScan Validation error happend");
+            }
+
+        }
+
+
+
+
 
         /// <summary>
         /// Get Scan By Employee Id
@@ -70,6 +95,11 @@ namespace STAS.Services
             return await repo.GetLastScanAsync(employeeId);
         }
 
+        public async Task<Scan> GetScanByIdAsync(int scanId)
+        {
+            return await repo.GetScanByIdAsync(scanId);
+        }
+
 
         #endregion
 
@@ -86,11 +116,26 @@ namespace STAS.Services
             Scan lastScan = repo.GetLastScan(scan.EmployeeId);
             if (lastScan == null) return true;
 
-            if (lastScan.ScanDate < scan.ScanDate && lastScan.ScanType != scan.ScanType) return true;
+            if (lastScan.ScanDate <= scan.ScanDate && lastScan.ScanType != scan.ScanType) return true;
             
             return false;
         }
 
+
+        private async Task<bool> ValidationScanUpdate(Scan scan)
+        {
+            NCP ncp = await list.NCPScan(scan);
+
+           
+            Scan previousScan = await repo.GetScanByIdAsync(ncp.PreviousRecord ?? -1);
+            Scan nextScan = await repo.GetScanByIdAsync(ncp.NextRecord ?? -1);
+
+
+         
+            if (previousScan.ScanDate <= scan.ScanDate && nextScan.ScanDate > scan.ScanDate) return true;
+
+            return false;
+        }
         #endregion
 
     }
