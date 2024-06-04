@@ -27,6 +27,12 @@ namespace STAS.Services
             return await repo.GetTypeScan();
         }
 
+        /// <summary>
+        /// Get next, current and previous records from scan table.
+        /// </summary>
+        /// <param name="scan"></param>
+        /// <returns></returns>
+
         public async Task<NCP> NCPScan(Scan scan)
         {
             return await repo.NCPScan(scan);
@@ -41,6 +47,16 @@ namespace STAS.Services
         public async Task<int> GetEmployeeIdByNumber(string cardNumber)
         {
             return await repo.GetEmployeeIdByNumber(cardNumber);
+        }
+
+        /// <summary>
+        /// Get Employee List
+        /// </summary>
+        /// <param name="cardNumber"></param>
+        /// <returns></returns>
+        public async Task<List<Employee>> GetAllEmployee()
+        {
+            return await repo.GetAllEmployee();
         }
 
         #endregion

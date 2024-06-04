@@ -62,7 +62,7 @@ namespace STAS.Repo
                 new Parm("@ScanId", SqlDbType.Int, scan.ScanId),
                 new Parm("@EmployeeId", SqlDbType.NVarChar, scan.EmployeeId),
                 new Parm("@ScanTypeId", SqlDbType.Int, scan.ScanType),
-                new Parm("@ScanDate", SqlDbType.DateTime2, DateTime.Now),
+                new Parm("@ScanDate", SqlDbType.DateTime2, scan.ScanDate),
                 new Parm("@RecordVersion", SqlDbType.Timestamp, scan.RecordVersion)
             };
 
@@ -153,7 +153,7 @@ namespace STAS.Repo
 
             Scan scans = new Scan();
 
-            if (dt != null)
+            if (dt.Rows.Count != 0)
             {
                 return PopulateScan(dt.Rows[0]);
             }

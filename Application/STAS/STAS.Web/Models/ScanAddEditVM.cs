@@ -9,6 +9,6 @@ namespace STAS.Web.Models
 
         public string? EmployeeName { get; set; }
 
-        public IEnumerable<SelectListItem>? ScanTupesList { get; set; } 
+        public IEnumerable<SelectListItem>? ScanTypesList { get; set; } 
     }
 }

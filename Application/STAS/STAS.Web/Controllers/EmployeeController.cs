@@ -3,8 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using STAS.Services;
 using STAS.Model;
 using STAS.Web.Models;
+using PagedList;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Http.HttpResults;
+using static NuGet.Packaging.PackagingConstants;
+using System;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace STAS.Web.Controllers
 {
@@ -16,8 +20,12 @@ namespace STAS.Web.Controllers
         private readonly ListService listService = new();
 
         // GET: EmployeeController
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(int? page)
         {
+            // Create pegination consts
+            const int pageSize = 8;
+            int pageNumber = (page ?? 1);
+
             try
             {
                 List<Employee> employees = await service.GetAllEmployeesAsync();
@@ -25,8 +33,13 @@ namespace STAS.Web.Controllers
                 {
                     TempData["EmployeeEmpty"] = "You don't have employees yet.";
                 }
+            
 
-                return View(employees);
+                var pagedEmp = employees.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                ViewBag.TotalPages = (int)Math.Ceiling((double)employees.Count / pageSize);
+                ViewBag.CurrentPage = pageNumber;
+
+                return View(pagedEmp);
             }
             catch (Exception ex)
             {
@@ -34,6 +47,77 @@ namespace STAS.Web.Controllers
             }
             
         }
+
+        // GET: EmployeeController Search method
+        public async Task<ActionResult> Search(string? startDate, string? endDate, int? employeeId, int? status)
+        {
+            // create classes and list of employees
+            EmployeeWithScans employeeWithScans = new EmployeeWithScans();
+            employeeWithScans.EmployeesList = await GetEmployeeList();
+            employeeWithScans.ScanTypesList = await GetTypes();
+            List<ScanVM> scansVm = new List<ScanVM>();
+
+            try
+            {
+                if (employeeId == null)
+                {
+                    TempData["EmployeeEmpty"] = "Employee is not set.";
+                    return View(employeeWithScans);
+                }
+
+                List<ScanType> types = await listService.GetTypeScan();
+                Employee employee = await service.SearchEmployeeByIdAsync((int)employeeId!);
+                List<Scan> scans = await scanService.SearchScanByEmployeeIdAsync((int)employeeId);
+
+                // search by date
+                if(!String.IsNullOrEmpty(startDate) && !String.IsNullOrEmpty(endDate))
+                {
+                    scans = scans.Where(sc => sc.ScanDate >= Convert.ToDateTime(startDate)
+                          && sc.ScanDate <= Convert.ToDateTime(endDate)).ToList();
+                }
+                else if (String.IsNullOrEmpty(startDate) && !String.IsNullOrEmpty(endDate))
+                {
+                    scans = scans.Where(sc => sc.ScanDate <= Convert.ToDateTime(endDate)).ToList();
+                }
+                else if (!String.IsNullOrEmpty(startDate) && String.IsNullOrEmpty(endDate))
+                {
+                    scans = scans.Where(sc => sc.ScanDate >= Convert.ToDateTime(startDate)).ToList();
+                }
+
+                //Filter by type
+                if (status != null)
+                {
+                    scans = scans.Where(sc => sc.ScanType.Equals(status)).ToList();
+                }
+
+                foreach (var sc in scans)
+                {
+                    List<ScanType> type = types;
+                    ScanVM scanVM = new ScanVM()
+                    {
+                        ScanId = sc.ScanId,
+                        ScanDate = sc.ScanDate,
+                        ScanType = type.FirstOrDefault(t => t.TypeId == sc.ScanType).TypeName
+                    };
+
+                    scansVm.Add(scanVM);
+                }
+
+                employeeWithScans.Scans = scansVm;
+                employeeWithScans.Employee = employee;
+
+                return View(employeeWithScans);
+        }
+            catch (Exception ex)
+            {
+                return ShowError(ex);
+            }
+
+        }
+
+
+
+
 
         // GET: EmployeeController/Details/5
         public async Task<ActionResult> Details(int? id)
@@ -286,6 +370,31 @@ namespace STAS.Web.Controllers
             });
         }
 
+
+        private async Task<IEnumerable<SelectListItem>?> GetEmployeeList()
+        {
+            List<Employee> employees = await service.GetAllEmployeesAsync();
+
+            return employees.Select(emp =>
+            new SelectListItem
+            {
+                Value = emp.EmployeeId.ToString(),
+                Text = emp.FullName,
+            }).ToList();
+
+        }
+
+        private async Task<IEnumerable<SelectListItem>>? GetTypes()
+        {
+            var types = await new ListService().GetTypeScan();
+
+            return types.Select(t =>
+            new SelectListItem
+            {
+                Value = t.TypeId.ToString(),
+                Text = t.TypeName
+            }).ToList();
+        }
 
         #endregion
 

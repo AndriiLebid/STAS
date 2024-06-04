@@ -5,6 +5,7 @@ using STAS.Web.Models;
 using STAS.Model;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 
 namespace STAS.Web.Controllers
 {
@@ -31,26 +32,28 @@ namespace STAS.Web.Controllers
         // GET: ScanController/Create
         public async Task<ActionResult> Create(int? id)
         {
+            ScanAddEditVM scanVM = new();
             try
             {
                 if (id == null) new Exception("No parameter in the request");
 
-                ScanAddEditVM scanVM = new();
+                
                 Employee employee = await empService.SearchEmployeeByIdAsync((int)id);
 
                 if (employee == null) new Exception("Wrong employee id in the request");
 
                 scanVM.scan.ScanDate = DateTime.Now;
                 scanVM.scan.EmployeeId = (int)id;
-                scanVM.EmployeeName = employee.FullName;
-                scanVM.ScanTupesList = await GetTypes();
+                scanVM.EmployeeName = employee!.FullName;
+                scanVM.ScanTypesList = await GetTypes();
 
                 return View(scanVM);
 
             }
             catch (Exception ex)
             {
-                return ShowError(ex);
+                TempData["Error"] = ex.Message.ToString();
+                return RedirectToAction("Details", "Employee", new { id = scanVM.scan.EmployeeId });
             }
         }
 
@@ -88,30 +91,30 @@ namespace STAS.Web.Controllers
                 }
 
                 TempData["Success"] = "Scan created successfully.";
-                return RedirectToAction("Index", "Employee");
+                return RedirectToAction("Details", "Employee", new { id = scan.EmployeeId });
 
             }
             catch(Exception ex)
             {
                 TempData["Error"] = ex.Message.ToString();
-                return RedirectToAction("Index", "Employee");
+                return RedirectToAction("Details", "Employee", new { id = scanVM.scan.EmployeeId });
             }
         }
 
         // GET: ScanController/Edit/5
         public async Task<ActionResult> Edit(int? id)
         {
-
+            Scan scan = new();
             try
             {
                 if (id == null) new Exception("No parameter in the request");
 
                 ScanAddEditVM scanVM = new();
-                Scan scan = await scanService.GetScanByIdAsync((int)id);
+                scan = await scanService.GetScanByIdAsync((int)id!);
 
                 if (scan == null) new Exception("Wrong parameter in the request");
 
-                scanVM.scan.ScanId = scan.ScanId;
+                scanVM.scan.ScanId = scan!.ScanId;
                 scanVM.scan.ScanDate = scan.ScanDate;
                 scanVM.scan.EmployeeId = scan.EmployeeId;
                 Employee emp = await empService.SearchEmployeeByIdAsync((int)id);
@@ -119,14 +122,15 @@ namespace STAS.Web.Controllers
                 scanVM.scan.ScanType = scan.ScanType;
                 scanVM.scan.RecordVersion = scan.RecordVersion;
                 
-                scanVM.ScanTupesList = await GetTypes();
+                scanVM.ScanTypesList = await GetTypes();
 
                 return View(scanVM);
 
             }
             catch (Exception ex)
             {
-                return ShowError(ex);
+                TempData["Error"] = ex.Message.ToString();
+                return RedirectToAction("Details", "Employee", new { id = scan.EmployeeId });
             }
         }
 
@@ -169,13 +173,14 @@ namespace STAS.Web.Controllers
                 }
 
                 TempData["Success"] = "Scan created successfully.";
-                return RedirectToAction("Index", "Employee");
+                return RedirectToAction("Details", "Employee", new { id = scan.EmployeeId });
 
 
             }
             catch(Exception ex) 
             {
-                return ShowError(ex);
+                TempData["Error"] = ex.Message.ToString();
+                return RedirectToAction("Details", "Employee", new { id = scanVM.scan.EmployeeId });
             }
         }
 

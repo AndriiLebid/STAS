@@ -397,5 +397,3 @@ BEGIN
 END
 
 GO
-
-[spGetLCNScanRows] 5, 2

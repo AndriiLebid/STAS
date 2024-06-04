@@ -4,6 +4,25 @@
     ViewData["Title"] = "Details";
 }
 
+<div class="col-md-12">
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger text-center">
+            @TempData["Error"]
+        </div>
+    }
+</div>
+
+
+<div class="col-md-12">
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success text-center">
+            @TempData["Success"]
+        </div>
+    }
+</div>
+
 <h1>Employee Details</h1>
 
 <div>
@@ -42,13 +61,18 @@
     </dl>
 </div>
 
-<table class="table">
+
     @if (Model.Scans!.Count == 0)
     {
-        <tr>
-            <td>This order don't have items.</td>
-        </tr>
+        <h4 class="text-center text-warning">This employee does not have scans.</h4>
     }
+
+<div class="col-md-12">
+    <div style="max-height: 350px; overflow-y: auto;">
+
+    @if (Model.Scans!.Count != 0)
+    {
+    <table class="table">
     <thead>
         <tr>
             <th>
@@ -83,11 +107,13 @@
                 </td>
             </tr>
         }
-    </tbody>
-</table>
+        </tbody>
+    </table>
+    }
+    </div>
+</div>
 
-
-<div>
+<div class="pt-4">
     @Html.ActionLink("Create Scan", "Create", "Scan", new { id = Model.Employee.EmployeeId }, new { @class = "btn btn-success", style = "text-decoration: none;" })
     @Html.ActionLink("Edit", "Edit", new { id = Model.Employee.EmployeeId }, new { @class = "btn btn-warning", style = "text-decoration: none;" })
     <a class="btn btn-info" asp-action="Index">Back to List</a>

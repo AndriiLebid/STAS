@@ -40,7 +40,29 @@ namespace STAS.Repo
         }
 
         /// <summary>
-        /// Get Next and Previous records for scan table
+        /// Get All Employee
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<Employee>> GetAllEmployee()
+        {
+            DataTable dt = await db.ExecuteAsync("spGetAllEmployees");
+
+            return dt.AsEnumerable().Select(row =>
+                new Employee
+                {
+                    EmployeeId = Convert.ToInt32(row["EmployeeId"]),
+                    FirstName = row["FirstName"].ToString(),
+                    MiddleInitial = row["MiddleInitial"].ToString(),
+                    LastName = row["LastName"].ToString(),
+                    TypeEmployeeId = Convert.ToInt32(row["TypeEmployeeId"]),
+                    EmployeeNumber = row["EmployeeCardNumber"].ToString(),
+                    RecordVersion = (byte[])row["RecordVersion"]
+                }).ToList();
+
+        }
+
+        /// <summary>
+        /// Get next, current and previous records from scan table.
         /// </summary>
         /// <returns></returns>
         public async Task<NCP> NCPScan(Scan sc)
@@ -53,16 +75,17 @@ namespace STAS.Repo
             };
 
 
-            DataTable dt = await db.ExecuteAsync("GetLCNScanRows", parms);
+            DataTable dt = await db.ExecuteAsync("spGetLCNScanRows", parms);
 
             DataRow rw = dt.Rows[0];
 
-            return new NCP
-                   {
-                       NextRecord = Convert.ToInt32(rw["NextValue"]),
-                       CurrentRecord = Convert.ToInt32(rw["RawScanID"]),
-                       PreviousRecord = Convert.ToInt32(rw["PreviousValue"]),
-                   };
+            NCP ncp = new();
+
+            ncp.NextRecord = int.TryParse(rw["NextValue"].ToString(), out int nextValue) ? nextValue : null;
+            ncp.CurrentRecord = int.TryParse(rw["RawScanID"].ToString(), out int currentValue) ? currentValue : null;
+            ncp.PreviousRecord = int.TryParse(rw["PreviousValue"].ToString(), out int PreviousValue) ? PreviousValue : null;
+
+           return ncp;
 
         }
 

@@ -108,6 +108,7 @@ namespace STAS.Services
         #region Private Methods
         /// <summary>
         /// Verification RawScan
+        /// Time should be after last record and scan type should be opposite
         /// </summary>
         /// <param name="scan"></param>
         /// <returns></returns>
@@ -121,18 +122,25 @@ namespace STAS.Services
             return false;
         }
 
-
+        /// <summary>
+        /// Validation scan time for updated records,
+        /// time should be between next and previous
+        /// </summary>
+        /// <param name="scan"></param>
+        /// <returns></returns>
         private async Task<bool> ValidationScanUpdate(Scan scan)
         {
             NCP ncp = await list.NCPScan(scan);
 
            
-            Scan previousScan = await repo.GetScanByIdAsync(ncp.PreviousRecord ?? -1);
-            Scan nextScan = await repo.GetScanByIdAsync(ncp.NextRecord ?? -1);
+            Scan previousScan = (ncp.PreviousRecord != null) ? await repo.GetScanByIdAsync((int)ncp.PreviousRecord!) : null;
+            Scan nextScan = (ncp.NextRecord != null) ? await repo.GetScanByIdAsync((int)ncp.NextRecord!) : null;
 
 
-         
-            if (previousScan.ScanDate <= scan.ScanDate && nextScan.ScanDate > scan.ScanDate) return true;
+            if (previousScan == null && nextScan == null) return true;
+            if (previousScan == null && scan.ScanDate <= nextScan.ScanDate) return true;
+            if (nextScan == null && scan.ScanDate >= previousScan!.ScanDate) return true;
+            if (previousScan!.ScanDate <= scan.ScanDate && nextScan!.ScanDate > scan.ScanDate) return true;
 
             return false;
         }

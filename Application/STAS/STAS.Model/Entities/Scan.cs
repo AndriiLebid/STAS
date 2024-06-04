@@ -18,6 +18,7 @@ namespace STAS.Model
 
         [Required(ErrorMessage = "Scan Date is required.")]
         [Display(Name = "Scan Date")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-ddTHH:mm:ss}", ApplyFormatInEditMode = true)]
         public DateTime ScanDate { get; set; }
 
         [Required(ErrorMessage = "Scan Type is required.")]

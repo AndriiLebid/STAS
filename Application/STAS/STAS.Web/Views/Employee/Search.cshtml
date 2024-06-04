@@ -1,0 +1,164 @@
+﻿@model STAS.Web.Models.EmployeeWithScans
+
+@{
+    ViewData["Title"] = "Search";
+}
+
+<h2 class="pb-5">Search Page</h2>
+
+<div class="col-md-12">
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger text-center">
+            @TempData["Error"]
+        </div>
+    }
+</div>
+
+
+<div class="col-md-12">
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success text-center">
+            @TempData["Success"]
+        </div>
+    }
+</div>
+
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Search">
+            <div>
+                <dl class="dl-horizontal">
+                    <dt>
+                        <label>Start Date</label>
+                    </dt>
+                    <dd>
+                        <input name="StartDate" value="@ViewBag.StartDate" class="form-control" type="date" />
+                    </dd>
+                    <dt>
+                        <label>End Date Date</label>
+                    </dt>
+                    <dd>
+                        <input name="EndDate" value="@ViewBag.EndDate" class="form-control" type="date" />
+                    </dd>
+                    <dt>
+                        <label>Employee Full Name</label>
+                    </dt>
+                    <dd>
+                        <select name="employeeId" asp-items="Model.EmployeesList" class="form-select">
+                            <option value="">---Select Employee---</option>
+                        </select>
+                    </dd>
+                    <dt>
+                        <label>Scan Status</label>
+                    </dt>
+                    <dd>
+                        <select name="status" asp-items="Model.ScanTypesList" class="form-select">
+                            <option>---Select Type---</option>
+                        </select>
+                    </dd>
+                    <dd>
+                        <span class="list-group-numbered" id="basic-text1">
+                            <button type="submit" class="btn btn-primary">Search</button>
+                            <button type="reset" class="btn btn-primary">Reset</button>
+                        </span>
+                    </dd>
+                </dl>
+            </div>
+        </form>
+
+        <div>
+            <dl class="row">
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.Employee.EmployeeId)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.Employee.EmployeeId)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.Employee.EmployeeNumber)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.Employee.EmployeeNumber)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.Employee.FirstName)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.Employee.FirstName)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.Employee.MiddleInitial)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.Employee.MiddleInitial)
+                </dd>
+                <dt class="col-sm-6">
+                    @Html.DisplayNameFor(model => model.Employee.LastName)
+                </dt>
+                <dd class="col-sm-6">
+                    @Html.DisplayFor(model => model.Employee.LastName)
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+    @if (Model.Scans == null || Model.Scans!.Count == 0)
+    {
+        <h4 class="text-center text-warning">This search does not have results.</h4>
+    }
+    else
+    {
+        <div class="col-md-12">
+            <div style="max-height: 350px; overflow-y: auto;">
+
+                @if (Model.Scans!.Count != 0)
+                {
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Scans![0].ScanId)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Scans![0].ScanDate)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Scans![0].ScanType)
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Scans)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.ScanId)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.ScanDate)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.ScanType)
+                                    </td>
+                                    <td>
+                                        <div style="display: flex; gap: 5px;">
+                                            <div class="btn btn-warning">@Html.ActionLink("Edit", "Edit", "Scan", new { id = item.ScanId }, new { style = "text-decoration: none;" })</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+    }
+    </div>   
+</div>
+       
+
