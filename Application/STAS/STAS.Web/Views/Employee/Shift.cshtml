@@ -1,10 +1,10 @@
-﻿@model STAS.Web.Models.EmployeeWithScans
+﻿@model STAS.Web.Models.ShiftVM
 
 @{
-    ViewData["Title"] = "Search";
+    ViewData["Title"] = "Shift";
 }
 
-<h2 class="pb-5">Search Page</h2>
+<h2 class="pb-5">Shift</h2>
 
 <div class="col-md-12">
     @if (TempData["Error"] != null)
@@ -27,7 +27,7 @@
 
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Search">
+        <form asp-action="Shift">
             <div>
                 <dl class="dl-horizontal">
                     <dt>
@@ -37,25 +37,11 @@
                         <input name="StartDate" value="@ViewBag.StartDate" class="form-control" type="date" />
                     </dd>
                     <dt>
-                        <label>End Date Date</label>
-                    </dt>
-                    <dd>
-                        <input name="EndDate" value="@ViewBag.EndDate" class="form-control" type="date" />
-                    </dd>
-                    <dt>
                         <label>Employee Full Name</label>
                     </dt>
                     <dd>
                         <select name="employeeId" asp-items="Model.EmployeesList" class="form-select">
                             <option value="">---Select Employee---</option>
-                        </select>
-                    </dd>
-                    <dt>
-                        <label>Scan Status</label>
-                    </dt>
-                    <dd>
-                        <select name="status" asp-items="Model.ScanTypesList" class="form-select">
-                            <option>---Select Type---</option>
                         </select>
                     </dd>
                     <dd>
@@ -67,6 +53,7 @@
                 </dl>
             </div>
         </form>
+
 
         <div>
             <dl class="row">
@@ -105,59 +92,50 @@
     </div>
 
     <div class="col-md-8">
-    @if (Model.Scans == null || Model.Scans!.Count == 0)
-    {
-        <h4 class="text-center text-warning">This search does not have results.</h4>
-    }
-    else
-    {
-        <div class="col-md-12">
-            <div style="max-height: 350px; overflow-y: auto;">
+        @if (Model.Shifts == null || Model.Shifts!.Count == 0)
+        {
+            <h4 class="text-center text-warning">This Employee does not have shifts for this tome period.</h4>
+        }
+        else
+        {
+            <div class="col-md-12">
+                <div style="max-height: 350px; overflow-y: auto;">
 
-                @if (Model.Scans!.Count != 0)
-                {
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.Scans![0].ScanId)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.Scans![0].ScanDate)
-                                </th>
-                                <th>
-                                    @Html.DisplayNameFor(model => model.Scans![0].ScanType)
-                                </th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model.Scans)
-                            {
+                    @if (Model.Shifts!.Count != 0)
+                    {
+                        <table class="table">
+                            <thead>
                                 <tr>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.ScanId)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.ScanDate)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.ScanType)
-                                    </td>
-                                    <td>
-                                        <div style="display: flex; gap: 5px;">
-                                            <div class="btn btn-warning">@Html.ActionLink("Edit", "Edit", "Scan", new { id = item.ScanId }, new { style = "text-decoration: none;" })</div>
-                                        </div>
-                                    </td>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Shifts![0].StartDate)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Shifts![0].EndDate)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Shifts![0].Duration)
+                                    </th>
+                                    <th></th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
-                }
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Shifts)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.StartDate)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.EndDate)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.DurationFormatted)
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
             </div>
-        </div>
-    }
-    </div>   
-</div>
-       
-
+        }

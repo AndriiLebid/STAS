@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using static NuGet.Packaging.PackagingConstants;
 using System;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Data;
+using Microsoft.IdentityModel.Tokens;
 
 namespace STAS.Web.Controllers
 {
@@ -61,7 +63,7 @@ namespace STAS.Web.Controllers
             {
                 if (employeeId == null)
                 {
-                    TempData["EmployeeEmpty"] = "Employee is not set.";
+                    TempData["Error"] = "Employee is not set. Select an Employee, pleace.";
                     return View(employeeWithScans);
                 }
 
@@ -115,7 +117,107 @@ namespace STAS.Web.Controllers
 
         }
 
+        // GET: EmployeeController Search method
+        public async Task<ActionResult> Shift(string? startDate, int? employeeId)
+        {
 
+
+            
+            try
+            {
+                ShiftVM shiftVMobject = new ShiftVM()
+                {
+                    EmployeesList = await GetEmployeeList(),
+                    Shifts = new List<Shift>()
+                };
+
+                // Check entered data
+                if (startDate == null)
+                {
+                    TempData["Error"] = "The start date of the period has not been set.";
+                    return View(shiftVMobject);
+                }
+
+                if (employeeId == null)
+                {
+                    TempData["Error"] = "Employee is not set. Select an Employee, pleace.";
+                    return View(shiftVMobject);
+                }
+
+                //get employee and scans records
+                shiftVMobject.Employee = await service.SearchEmployeeByIdAsync((int)employeeId!);
+                List<Scan> scans = await scanService.SearchScanByEmployeeIdAsync((int)employeeId);
+
+                //Calculate end date
+                DateTime startDateTime = Convert.ToDateTime(startDate);
+                DateTime endDateTime = startDateTime.AddDays(14);
+
+                // filter scans by date and order it
+                scans = scans.Where(sc => sc.ScanDate >= startDateTime
+                          && sc.ScanDate <= endDateTime).ToList();
+                scans = scans.OrderBy(s => s.ScanDate).ToList();
+
+                //Ctera shift instance
+                Shift currentShift = new();
+
+                // Populate shifts
+                foreach (var sc in scans)
+                {
+                    if(sc.ScanType == 1)
+                    {
+                        //if(currentShift == null)
+                        //{
+                            currentShift = new Shift
+                            {
+                                StartDate = sc.ScanDate,
+                                EmployeeName = shiftVMobject.Employee.FullName
+                            };
+                        //}
+                        //else
+                        //{
+                        //    // to check
+                        //}
+                    }
+                    else if(sc.ScanType == 2)
+                    {
+                        if (currentShift == null)
+                        {
+                            currentShift = new Shift
+                            {
+                                StartDate = startDateTime,
+                                EndDate = sc.ScanDate,
+                                EmployeeName = shiftVMobject.Employee.FullName
+                            };
+                            shiftVMobject.Shifts.Add(currentShift);
+                            currentShift = null;
+                        }
+                        else
+                        {
+                            currentShift.EndDate = sc.ScanDate;
+                            shiftVMobject.Shifts.Add(currentShift);
+                            currentShift = null;
+                        }
+
+
+                    }
+
+                }
+
+                if (currentShift != null)
+                {
+                    currentShift.EndDate = currentShift.StartDate.Date.AddDays(1).AddTicks(-1);
+                    shiftVMobject.Shifts.Add(currentShift);
+                }
+
+
+                return View(shiftVMobject);
+            }
+            catch (Exception ex)
+            {
+                return ShowError(ex);
+            }
+
+        }
 
 
 

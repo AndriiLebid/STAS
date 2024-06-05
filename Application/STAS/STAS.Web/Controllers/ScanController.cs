@@ -117,7 +117,7 @@ namespace STAS.Web.Controllers
                 scanVM.scan.ScanId = scan!.ScanId;
                 scanVM.scan.ScanDate = scan.ScanDate;
                 scanVM.scan.EmployeeId = scan.EmployeeId;
-                Employee emp = await empService.SearchEmployeeByIdAsync((int)id);
+                Employee emp = await empService.SearchEmployeeByIdAsync(scan.EmployeeId);
                 scanVM.EmployeeName = emp.FullName;
                 scanVM.scan.ScanType = scan.ScanType;
                 scanVM.scan.RecordVersion = scan.RecordVersion;
