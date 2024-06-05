@@ -90,6 +90,7 @@
             </dl>
         </div>
     </div>
+    
 
     <div class="col-md-8">
         @if (Model.Shifts == null || Model.Shifts!.Count == 0)
@@ -128,7 +129,7 @@
                                         <td>
                                             @Html.DisplayFor(modelItem => item.EndDate)
                                         </td>
-                                        <td>
+                                        <td class="@(item.Duration.TotalHours > 8 ? "text-warning" : "")">
                                             @Html.DisplayFor(modelItem => item.DurationFormatted)
                                         </td>
                                     </tr>
@@ -137,5 +138,11 @@
                         </table>
                     }
                 </div>
+                <div class="text-right">
+                    <strong>Total Duration: <span class="@(Model.TotalDuration.TotalHours > 40 ? "text-warning" : "")" id="total-duration">@Model.TotalDurationFormatted</span></strong>
+                </div>
             </div>
         }
+    </div>
+</div>
+

@@ -36,7 +36,6 @@ namespace STAS.Web.Controllers
                     TempData["EmployeeEmpty"] = "You don't have employees yet.";
                 }
             
-
                 var pagedEmp = employees.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
                 ViewBag.TotalPages = (int)Math.Ceiling((double)employees.Count / pageSize);
                 ViewBag.CurrentPage = pageNumber;
@@ -61,11 +60,17 @@ namespace STAS.Web.Controllers
 
             try
             {
+                
+
                 if (employeeId == null)
-                {
-                    TempData["Error"] = "Employee is not set. Select an Employee, pleace.";
+                { 
                     return View(employeeWithScans);
                 }
+
+                ViewBag.StartDate = startDate;
+                ViewBag.EndDate = endDate;
+                ViewBag.Status = status;
+                ViewBag.EmployeeId = employeeId;
 
                 List<ScanType> types = await listService.GetTypeScan();
                 Employee employee = await service.SearchEmployeeByIdAsync((int)employeeId!);
@@ -117,14 +122,16 @@ namespace STAS.Web.Controllers
 
         }
 
-        // GET: EmployeeController Search method
+        // GET: EmployeeController Calculated Shifts method
         public async Task<ActionResult> Shift(string? startDate, int? employeeId)
         {
 
-
-            
             try
             {
+                ViewBag.StartDate = startDate;
+                ViewBag.EmployeeId = employeeId;
+
+
                 ShiftVM shiftVMobject = new ShiftVM()
                 {
                     EmployeesList = await GetEmployeeList(),
@@ -134,13 +141,13 @@ namespace STAS.Web.Controllers
                 // Check entered data
                 if (startDate == null)
                 {
-                    TempData["Error"] = "The start date of the period has not been set.";
+                   
                     return View(shiftVMobject);
                 }
 
                 if (employeeId == null)
                 {
-                    TempData["Error"] = "Employee is not set. Select an Employee, pleace.";
+                  
                     return View(shiftVMobject);
                 }
 
@@ -161,54 +168,55 @@ namespace STAS.Web.Controllers
                 Shift currentShift = new();
 
                 // Populate shifts
-                foreach (var sc in scans)
-                {
-                    if(sc.ScanType == 1)
+
+                if (scans.Count > 0) {
+
+                    foreach (var sc in scans)
                     {
-                        //if(currentShift == null)
-                        //{
+                        if (sc.ScanType == 1)
+                        {
                             currentShift = new Shift
                             {
                                 StartDate = sc.ScanDate,
                                 EmployeeName = shiftVMobject.Employee.FullName
                             };
-                        //}
-                        //else
-                        //{
-                        //    // to check
-                        //}
-                    }
-                    else if(sc.ScanType == 2)
-                    {
-                        if (currentShift == null)
+                        }
+                        else if (sc.ScanType == 2)
                         {
-                            currentShift = new Shift
+                            if (currentShift == null)
                             {
-                                StartDate = startDateTime,
-                                EndDate = sc.ScanDate,
-                                EmployeeName = shiftVMobject.Employee.FullName
-                            };
-                            shiftVMobject.Shifts.Add(currentShift);
-                            currentShift = null;
+                                currentShift = new Shift
+                                {
+                                    StartDate = startDateTime,
+                                    EndDate = sc.ScanDate,
+                                    EmployeeName = shiftVMobject.Employee.FullName
+                                };
+                                shiftVMobject.Shifts.Add(currentShift);
+                                currentShift = null;
+                            }
+                            else
+                            {
+                                currentShift.EndDate = sc.ScanDate;
+                                shiftVMobject.Shifts.Add(currentShift);
+                                currentShift = null;
+                            }
                         }
-                        else
-                        {
-                            currentShift.EndDate = sc.ScanDate;
-                            shiftVMobject.Shifts.Add(currentShift);
-                            currentShift = null;
-                        }
-
-
                     }
 
+                    if (currentShift != null)
+                    {
+                        currentShift.EndDate = currentShift.StartDate.Date.AddDays(1).AddTicks(-1);
+                        shiftVMobject.Shifts.Add(currentShift);
+                    }
                 }
 
-                if (currentShift != null)
+                if (shiftVMobject.Shifts.Count !=0)
                 {
-                    currentShift.EndDate = currentShift.StartDate.Date.AddDays(1).AddTicks(-1);
-                    shiftVMobject.Shifts.Add(currentShift);
+                    foreach (Shift shift in shiftVMobject.Shifts)
+                    {
+                        shiftVMobject.TotalDuration += shift.Duration;
+                    }
                 }
-
 
                 return View(shiftVMobject);
             }
@@ -409,55 +417,6 @@ namespace STAS.Web.Controllers
                 return RedirectToAction("Index", "Employee");
             }
         }
-
-        // POST: EmployeeController/Delete/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Delete(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
-
-
-
-        // GET: EmployeeController/Inactive/5
-        //[HttpGet("Employee/Inactive/{id}")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<ActionResult> Inactive(int id)
-        //{
-            
-        //    try
-        //    {
-        //        Employee employee = await service.SearchEmployeeByIdAsync(id);
-
-        //        if (employee == null) 
-        //        {
-        //            TempData["Error"] = "Employee not found.";
-        //            return RedirectToAction("Index", "Employee");
-        //        }
-
-        //        employee.TypeEmployeeId = 1;
-
-        //        employee = await service.UpdateEmployeeAsync(employee);
-
-        //        TempData["Success"] = "The employee has been deactivated.";
-        //        return RedirectToAction("Index", "Employee");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        TempData["Error"] = ex.Message.ToString();
-        //        return RedirectToAction("Index", "Employee");
-        //    }
-
-            
-        //}
 
 
         #region Private Methods
