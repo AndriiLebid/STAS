@@ -15,7 +15,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
+import com.advatek.stas.model.Scan
 import com.advatek.stas.ui.theme.STASTheme
+import java.time.LocalDateTime
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,16 +76,48 @@ fun ScanCodeForm(modifier: Modifier = Modifier) {
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Button(onClick = { /* Handle In action */ }) {
+                Button(onClick = { handleInAction(scanCode); scanCode = "" }) {
                     Text("In")
                 }
-                Button(onClick = { /* Handle Out action */ }) {
+                Button(onClick = { handleOutAction(scanCode); scanCode = "" }) {
                     Text("Out")
+                }
+            }
+            Spacer(modifier = Modifier.height(96.dp))
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Button(onClick =  { scanCode = "" }) {
+                    Text("Cancel")
                 }
             }
         }
     }
 }
+
+fun handleInAction(scanCode: String) {
+    val scan = Scan(
+        cardNumber = scanCode,
+        scanDate = LocalDateTime.now(),
+        scanType = "In"
+    )
+
+}
+
+fun handleOutAction(scanCode: String) {
+    val scan = Scan(
+        cardNumber = scanCode,
+        scanDate = LocalDateTime.now(),
+        scanType = "Out"
+    )
+
+}
+
+
+
+
+
 
 
 
