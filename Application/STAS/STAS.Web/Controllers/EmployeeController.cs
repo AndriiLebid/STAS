@@ -61,7 +61,6 @@ namespace STAS.Web.Controllers
             try
             {
                 
-
                 if (employeeId == null)
                 { 
                     return View(employeeWithScans);
@@ -217,6 +216,8 @@ namespace STAS.Web.Controllers
                         shiftVMobject.TotalDuration += shift.Duration;
                     }
                 }
+
+                var Result = shiftVMobject.TotalDuration.TotalHours;
 
                 return View(shiftVMobject);
             }

@@ -15,7 +15,7 @@ namespace STAS.Web.Models
 
         [NotMapped]
         [Display(Name = "Shift Duration")]
-        public string TotalDurationFormatted => $"{TotalDuration.Hours:D2}:{TotalDuration.Minutes:D2}";
+        public string TotalDurationFormatted => $"{(TotalDuration.Days * 12 + TotalDuration.Hours):D2}:{TotalDuration.Minutes:D2}";
 
         public IEnumerable<SelectListItem>? EmployeesList { get; set; }
     }

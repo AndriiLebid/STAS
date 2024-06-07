@@ -157,11 +157,11 @@ namespace STAS.API.Controllers
         /// <param name="employeeId"></param>
         /// <returns></returns>
 
-        [HttpGet("getLastScanByEmployeeId")]
+        [HttpGet("getLastScanByEmployeeId/{employeeId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Scan>> GetLastScan(string? employeeId = null)
+        public async Task<ActionResult<Scan>> GetLastScan(string? employeeId)
         {
             try
             {

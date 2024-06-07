@@ -22,7 +22,7 @@ namespace STAS.Web.Models
 
         [NotMapped]
         [Display(Name = "Shift Duration")]
-        public string DurationFormatted => $"{Duration.Hours:D2}:{Duration.Minutes:D2}";
+        public string DurationFormatted => $"{(Duration.Days*12 + Duration.Hours):D2}:{Duration.Minutes:D2}";
 
 
 
