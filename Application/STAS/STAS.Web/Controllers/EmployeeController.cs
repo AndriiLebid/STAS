@@ -24,6 +24,15 @@ namespace STAS.Web.Controllers
         // GET: EmployeeController
         public async Task<ActionResult> Index(int? page)
         {
+
+            //check login
+            var userName = HttpContext.Session.GetString("UserName");
+
+            if (userName == null)
+            {
+                return RedirectToAction("Login", "Login");
+            }
+
             // Create pegination consts
             const int pageSize = 8;
             int pageNumber = (page ?? 1);
@@ -52,6 +61,15 @@ namespace STAS.Web.Controllers
         // GET: EmployeeController Search method
         public async Task<ActionResult> Search(string? startDate, string? endDate, int? employeeId, int? status)
         {
+
+            //check login
+            var userName = HttpContext.Session.GetString("UserName");
+
+            if (userName == null)
+            {
+                return RedirectToAction("Login", "Login");
+            }
+
             // create classes and list of employees
             EmployeeWithScans employeeWithScans = new EmployeeWithScans();
             employeeWithScans.EmployeesList = await GetEmployeeList();
@@ -124,6 +142,14 @@ namespace STAS.Web.Controllers
         // GET: EmployeeController Calculated Shifts method
         public async Task<ActionResult> Shift(string? startDate, int? employeeId)
         {
+
+            //check login
+            var userName = HttpContext.Session.GetString("UserName");
+
+            if (userName == null)
+            {
+                return RedirectToAction("Login", "Login"); 
+            }
 
             try
             {
@@ -234,6 +260,15 @@ namespace STAS.Web.Controllers
         public async Task<ActionResult> Details(int? id)
         {
 
+            //check login
+            var userName = HttpContext.Session.GetString("UserName");
+
+            if (userName == null)
+            {
+                return RedirectToAction("Login", "Login");
+            }
+
+
             try
             {
 
@@ -278,6 +313,15 @@ namespace STAS.Web.Controllers
         // GET: EmployeeController/Create
         public ActionResult Create()
         {
+
+            //check login
+            var userName = HttpContext.Session.GetString("UserName");
+
+            if (userName == null)
+            {
+                return RedirectToAction("Login", "Login");
+            }
+
 
             try
             {
@@ -379,7 +423,7 @@ namespace STAS.Web.Controllers
             }
         }
 
-        // GET: EmployeeController/Delete/5
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Inactive(int id)

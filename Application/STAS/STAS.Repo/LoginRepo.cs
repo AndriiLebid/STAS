@@ -63,7 +63,7 @@ namespace STAS.Repo
             {
                 LoginUserId = Convert.ToInt32(row["UserId"]),
                 LoginUserName = row["UserName"].ToString(),
-                UserRole = row["UserRole"].ToString(),
+                UserRole = row["RoleName"].ToString(),
             };
         }
 

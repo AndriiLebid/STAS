@@ -1,4 +1,13 @@
-﻿<!DOCTYPE html>
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    var userName = HttpContextAccessor.HttpContext.Session.GetString("UserName");
+    var userRole = HttpContextAccessor.HttpContext.Session.GetString("Role");
+}
+
+
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -23,23 +32,42 @@
                         <li class="nav-item">
                             <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Employee" asp-action="Search">Search</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-controller="Employee" asp-action="Shift">Shifts</a>
-                        </li>
+
+                        @if (!string.IsNullOrEmpty(userName))
+                        {
+
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-area="" asp-controller="Employee" asp-action="Search">Search</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-area="" asp-controller="Employee" asp-action="Shift">Shifts</a>
+                            </li>
+
+                            <li class="nav-item dropdown me-3">
+                                <a class="nav-link dropdown-toggle text-white" href="#" id="attendanceBlockDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Employee
+                                </a>
+                                <ul class="dropdown-menu bg-light bg-opacity-75" aria-labelledby="attendanceBlockDropdown">
+                                    <li><a class="dropdown-item" asp-controller="Employee" asp-action="Index" style="color: #5033A2;"><i class="fa-solid fa-list icon-spacing"></i> List</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Employee" asp-action="Create" style="color: #5033A2;"><i class="fa-solid fa-plus-circle icon-spacing"></i> Create</a></li>
+
+                                </ul>
+                            </li>
+                        }
+
+                        @if (string.IsNullOrEmpty(userName))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-area="" asp-controller="Login" asp-action="Login">Login</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-area="" asp-controller="Login" asp-action="Logout">Logout</a>
+                            </li>
+                        }
                         
-                        <li class="nav-item dropdown me-3">
-                            <a class="nav-link dropdown-toggle text-white" href="#" id="attendanceBlockDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Employee
-                            </a>
-                            <ul class="dropdown-menu bg-light bg-opacity-75" aria-labelledby="attendanceBlockDropdown">
-                                <li><a class="dropdown-item" asp-controller="Employee" asp-action="Index" style="color: #5033A2;"><i class="fa-solid fa-list icon-spacing"></i> List</a></li>
-                                <li><a class="dropdown-item" asp-controller="Employee" asp-action="Create" style="color: #5033A2;"><i class="fa-solid fa-plus-circle icon-spacing"></i> Create</a></li>
-                               
-                            </ul>
-                        </li>
                       
                     </ul>
                 </div>

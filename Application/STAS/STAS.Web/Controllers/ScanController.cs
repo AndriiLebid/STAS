@@ -32,6 +32,15 @@ namespace STAS.Web.Controllers
         // GET: ScanController/Create
         public async Task<ActionResult> Create(int? id)
         {
+
+            //check login
+            var userName = HttpContext.Session.GetString("UserName");
+
+            if (userName == null)
+            {
+                return RedirectToAction("Login", "Login");
+            }
+
             ScanAddEditVM scanVM = new();
             try
             {
@@ -104,6 +113,14 @@ namespace STAS.Web.Controllers
         // GET: ScanController/Edit/5
         public async Task<ActionResult> Edit(int? id)
         {
+            //check login
+            var userName = HttpContext.Session.GetString("UserName");
+
+            if (userName == null)
+            {
+                return RedirectToAction("Login", "Login");
+            }
+
             Scan scan = new();
             try
             {

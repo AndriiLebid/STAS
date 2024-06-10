@@ -21,7 +21,7 @@ CREATE OR ALTER PROC [dbo].[spLogin]
 AS
 BEGIN
 	BEGIN TRY
-		SELECT * FROM [User] 
+		SELECT * FROM [User] INNER JOIN [Role] ON [User].UserRole = [Role].RoleId 
 		WHERE [User].UserName = @UserName AND [User].[Password] = @Password
 	END TRY
 	BEGIN CATCH
@@ -30,6 +30,7 @@ BEGIN
 END
 
 GO
+
 
 -- Get password salt
 
