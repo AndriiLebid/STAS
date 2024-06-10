@@ -3,7 +3,7 @@ NAME: Andrii Lebid
 DATE: 05/27/2024
 PURPOSE: Advatek System
 Description: Simple Time And Attendance System /Database Creation Script
-Version: 1.3
+Version: 2.0
 */
 
 USE [STAS-A];
@@ -25,6 +25,9 @@ DROP TABLE [STAS-A].dbo.ScanType;
 
 IF OBJECT_ID('[STAS-A].dbo.User', 'U') IS NOT NULL
 DROP TABLE [STAS-A].dbo.[User];
+
+IF OBJECT_ID('[STAS-A].dbo.Role', 'U') IS NOT NULL
+DROP TABLE [STAS-A].dbo.[Role];
 
 
 -- Create table ScanType
@@ -51,8 +54,6 @@ GO
 
 -- Create table EmployeeType
 
-
-
 IF OBJECT_ID('[STAS-A].dbo.EmployeeType') IS NULL
 	BEGIN 
 	CREATE TABLE [EmployeeType] (
@@ -73,6 +74,31 @@ END
 GO
 
 
+-- Create table Role
+
+
+
+IF OBJECT_ID('[STAS-A].dbo.Role') IS NULL
+	BEGIN 
+	CREATE TABLE [Role] (
+		RoleId INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+		RoleName NVARCHAR(30) NOT NULL
+	)
+		PRINT '------------------------------------------------------------------------------------------';
+		PRINT 'Role tabel has been created'
+		PRINT '------------------------------------------------------------------------------------------';
+	END
+ELSE
+	BEGIN
+		PRINT '------------------------------------------------------------------------------------------';
+		PRINT 'Role tabel exist';
+		PRINT '------------------------------------------------------------------------------------------';
+END
+
+GO
+
+
+
 -- Create table User
 
 
@@ -84,8 +110,9 @@ IF OBJECT_ID('EpicSolutions.dbo.User') IS NULL
 		[Password] CHAR(64) NOT NULL,
 		PasswordSalt BINARY(16) NOT NULL,
 		UserName NVARCHAR(30) NOT NULL,
-		UserRole NVARCHAR(30) NOT NULL,
-		CONSTRAINT UQ_User_UserName UNIQUE (UserName)
+		UserRole INT NOT NULL,
+		CONSTRAINT UQ_User_UserName UNIQUE (UserName),
+		CONSTRAINT FK_User_Role FOREIGN KEY (UserRole) REFERENCES Role(RoleId)
 		)
 		PRINT '------------------------------------------------------------------------------------------';
 		PRINT 'User table has been created'
@@ -189,13 +216,27 @@ VALUES
 SET IDENTITY_INSERT [dbo].[ScanType] OFF
 
 
+ -- Add Roles
+
+
+SET IDENTITY_INSERT [dbo].[Role] ON 
+
+INSERT [dbo].[Role] ([RoleId], [RoleName]) VALUES (1, N'Administrator')
+INSERT [dbo].[Role] ([RoleId], [RoleName]) VALUES (2, N'User')
+
+SET IDENTITY_INSERT [dbo].[Role] OFF
+GO
+
+
+
  -- Add Users
 
 
 SET IDENTITY_INSERT [dbo].[User] ON 
 
-INSERT [dbo].[User] ([UserId], [Password], [PasswordSalt], [UserName], [UserRole]) VALUES (1, N'd2a232d95451c7d6a4264ab1fec586560fb8cc6ff59f7ea542260293b1fe5395', 0xDE12A6FD00D1ADDDC5986C978BB1CDA8, N'Administrator','Admin')
-INSERT [dbo].[User] ([UserId], [Password], [PasswordSalt], [UserName], [UserRole]) VALUES (2, N'd2a232d95451c7d6a4264ab1fec586560fb8cc6ff59f7ea542260293b1fe5395', 0xDE12A6FD00D1ADDDC5986C978BB1CDA8, N'Admin', 'Admin')
+INSERT [dbo].[User] ([UserId], [Password], [PasswordSalt], [UserName], [UserRole]) VALUES (1, N'd2a232d95451c7d6a4264ab1fec586560fb8cc6ff59f7ea542260293b1fe5395', 0xDE12A6FD00D1ADDDC5986C978BB1CDA8, N'Administrator', 1)
+INSERT [dbo].[User] ([UserId], [Password], [PasswordSalt], [UserName], [UserRole]) VALUES (2, N'd2a232d95451c7d6a4264ab1fec586560fb8cc6ff59f7ea542260293b1fe5395', 0xDE12A6FD00D1ADDDC5986C978BB1CDA8, N'Admin', 1)
+INSERT [dbo].[User] ([UserId], [Password], [PasswordSalt], [UserName], [UserRole]) VALUES (3, N'd2a232d95451c7d6a4264ab1fec586560fb8cc6ff59f7ea542260293b1fe5395', 0xDE12A6FD00D1ADDDC5986C978BB1CDA8, N'User', 2)
 
 SET IDENTITY_INSERT [dbo].[User] OFF
 GO
