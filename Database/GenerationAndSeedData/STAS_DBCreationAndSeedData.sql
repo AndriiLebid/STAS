@@ -211,7 +211,11 @@ SET IDENTITY_INSERT [dbo].[ScanType] ON
 INSERT INTO [ScanType] (TypeId, TypeName)
 VALUES 
     (1, 'IN'),
-    (2, 'OUT');
+    (2, 'OUT'),
+	(3, 'BreakStart'),
+    (4, 'BreakEnd'),
+	(5, 'LunchStart'),
+    (6, 'LunchEnd');
 
 SET IDENTITY_INSERT [dbo].[ScanType] OFF
 

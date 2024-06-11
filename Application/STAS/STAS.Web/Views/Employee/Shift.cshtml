@@ -132,6 +132,11 @@
                                         <td class="@(item.Duration.TotalHours > 8 ? "text-warning" : "")">
                                             @Html.DisplayFor(modelItem => item.DurationFormatted)
                                         </td>
+                                        <td>
+                                            <div style="display: flex; gap: 5px;">
+                                                <div class="btn btn-warning">@Html.ActionLink("Details", "ShiftDetails", "Employee", new { name = item.EmployeeName, start = item.StartDate, end = item.EndDate }, new { style = "text-decoration: none;" })</div>
+                                            </div>
+                                        </td>
                                     </tr>
                                 }
                             </tbody>

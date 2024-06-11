@@ -166,13 +166,11 @@ namespace STAS.Web.Controllers
                 // Check entered data
                 if (startDate == null)
                 {
-                   
                     return View(shiftVMobject);
                 }
 
                 if (employeeId == null)
                 {
-                  
                     return View(shiftVMobject);
                 }
 
@@ -270,7 +268,22 @@ namespace STAS.Web.Controllers
 
         }
 
+        // GET: EmployeeController/ShiftDetails
+        public async Task<ActionResult> ShiftDetails(string name, DateTime start, DateTime end)
+        {
+            try
+            {
+                //if (shift == null)
+                //    return new BadRequestResult();
 
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return ShowError(ex);
+            }
+        }
 
         // GET: EmployeeController/Details/5
         public async Task<ActionResult> Details(int? id)

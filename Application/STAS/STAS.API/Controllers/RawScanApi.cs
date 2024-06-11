@@ -184,14 +184,14 @@ namespace STAS.API.Controllers
                     return BadRequest("The employee is not in the database.");
                 }
 
-                Scan scans = await service.SearchLastScanByEmployeeIdAsync(id);
+                Scan scan = await service.SearchLastScanByEmployeeIdAsync(id);
 
-                if (scans == null)
+                if (scan == null)
                 {
                     return NotFound(new Scan());
                 }
 
-                return Ok(scans);
+                return Ok(scan);
             }
             catch (Exception)
             {
