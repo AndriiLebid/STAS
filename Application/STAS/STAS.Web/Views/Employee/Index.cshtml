@@ -1,7 +1,10 @@
 ﻿@model IEnumerable<STAS.Model.Employee>
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
 @{
     ViewData["Title"] = "Employees List";
+    var userRole = HttpContextAccessor.HttpContext.Session.GetString("Role");
+    bool isAdmin = (userRole == "Administrator");
 }
 
 <div class="col-md-12">
@@ -25,9 +28,12 @@
 
 <h1>Employees List</h1>
 
-<p>
-    <a class="btn btn-success" asp-action="Create">Create New</a>
-</p>
+@if (isAdmin)
+{
+    <p>
+        <a class="btn btn-success" asp-action="Create">Create New</a>
+    </p>
+}
 <table class="table">
     <thead>
         <tr>
@@ -58,8 +64,13 @@
 
             <td>
                     <div style="display: flex; gap: 5px;">
+                        @if (isAdmin)
+                        {
                         <div class="btn btn-warning">@Html.ActionLink("Edit", "Edit", new { id = item.EmployeeId }, new { style = "text-decoration: none;" })</div>
+                        }
                         <div class="btn btn-info">@Html.ActionLink("Details", "Details", new { id = item.EmployeeId }, new { @class = "text-light", style = "text-decoration: none;" })</div>
+                        @if (isAdmin)
+                        {
                         <div >
                             @using (Html.BeginForm("Inactive", "Employee", FormMethod.Post))
                             {
@@ -67,6 +78,7 @@
                                 <input class="btn btn-light" type="submit" value="Inactive" />
                             }
                         </div>
+                        }
                     </div>
             </td>
         </tr>

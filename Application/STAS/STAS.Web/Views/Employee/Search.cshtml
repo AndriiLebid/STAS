@@ -1,7 +1,11 @@
 ﻿@model STAS.Web.Models.EmployeeWithScans
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
 
 @{
     ViewData["Title"] = "Search";
+    var userRole = HttpContextAccessor.HttpContext.Session.GetString("Role");
+    bool isAdmin = (userRole == "Administrator");
 }
 
 <h2 class="pb-5">Search Page</h2>
@@ -144,11 +148,14 @@
                                     <td>
                                         @Html.DisplayFor(modelItem => item.ScanType)
                                     </td>
-                                    <td>
-                                        <div style="display: flex; gap: 5px;">
-                                            <div class="btn btn-warning">@Html.ActionLink("Edit", "Edit", "Scan", new { id = item.ScanId }, new { style = "text-decoration: none;" })</div>
-                                        </div>
-                                    </td>
+                                        @if (isAdmin)
+                                        {
+                                        <td>
+                                            <div style="display: flex; gap: 5px;">
+                                                <div class="btn btn-warning">@Html.ActionLink("Edit", "Edit", "Scan", new { id = item.ScanId }, new { style = "text-decoration: none;" })</div>
+                                            </div>
+                                        </td>
+                                        }
                                 </tr>
                             }
                         </tbody>

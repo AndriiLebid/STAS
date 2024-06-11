@@ -49,8 +49,10 @@
                                 </a>
                                 <ul class="dropdown-menu bg-light bg-opacity-75" aria-labelledby="attendanceBlockDropdown">
                                     <li><a class="dropdown-item" asp-controller="Employee" asp-action="Index" style="color: #5033A2;"><i class="fa-solid fa-list icon-spacing"></i> List</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Employee" asp-action="Create" style="color: #5033A2;"><i class="fa-solid fa-plus-circle icon-spacing"></i> Create</a></li>
-
+                                    @if (userRole == "Administrator")
+                                    {
+                                        <li><a class="dropdown-item" asp-controller="Employee" asp-action="Create" style="color: #5033A2;"><i class="fa-solid fa-plus-circle icon-spacing"></i> Create</a></li>
+                                    }
                                 </ul>
                             </li>
                         }
