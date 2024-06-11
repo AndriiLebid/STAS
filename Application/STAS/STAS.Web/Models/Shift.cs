@@ -13,12 +13,26 @@ namespace STAS.Web.Models
         [Display(Name = "Start Date")]
         public DateTime StartDate { get; set; }
 
-        
         [Display(Name = "End Date")]
         public DateTime EndDate { get; set; }
 
+        [Display(Name = "Start Break")]
+        public DateTime StartBreak { get; set; }
+
+        [Display(Name = "End Break")]
+        public DateTime EndBreak { get; set; }
+
+        [Display(Name = "Start Lunch")]
+        public DateTime StartLunch { get; set; }
+
+        [Display(Name = "End Lunch")]
+        public DateTime EndLunch { get; set; }
+
         [NotMapped]
-        public TimeSpan Duration => EndDate - StartDate;
+        public TimeSpan DurationLunch => EndLunch - StartLunch;
+
+        [NotMapped]
+        public TimeSpan Duration => EndDate - StartDate - DurationLunch;
 
         [NotMapped]
         [Display(Name = "Shift Duration")]

@@ -226,6 +226,22 @@ namespace STAS.Web.Controllers
                                 currentShift = null;
                             }
                         }
+                        else if (sc.ScanType == 3)
+                        {
+                            currentShift.StartBreak = sc.ScanDate;
+                        }
+                        else if (sc.ScanType == 4)
+                        {
+                            currentShift.EndBreak = sc.ScanDate;
+                        }
+                        else if (sc.ScanType == 5)
+                        {
+                            currentShift.StartLunch = sc.ScanDate;
+                        }
+                        else if (sc.ScanType == 6)
+                        {
+                            currentShift.EndLunch = sc.ScanDate;
+                        }
                     }
 
                     if (currentShift != null)

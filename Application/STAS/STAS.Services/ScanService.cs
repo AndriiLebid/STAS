@@ -115,12 +115,20 @@ namespace STAS.Services
         private bool ValidationScan(Scan scan)
         {
             Scan lastScan = repo.GetLastScan(scan.EmployeeId);
-            if (lastScan == null) return true;
+            if (lastScan == null && scan.ScanType == 1) return true;
 
-            if (lastScan.ScanDate <= scan.ScanDate && lastScan.ScanType != scan.ScanType) return true;
-            
+            if (lastScan.ScanDate <= scan.ScanDate) 
+            {
+                if (ValidateType(lastScan.ScanType, scan.ScanType))
+                {
+                    return true;
+                }
+            }
+
             return false;
         }
+
+
 
         /// <summary>
         /// Validation scan time for updated records,
@@ -145,6 +153,21 @@ namespace STAS.Services
             return false;
         }
         #endregion
+
+        private bool ValidateType(int? lastScanType, int scanType)
+        {
+            if (lastScanType == scanType) return false;
+
+            if (lastScanType == null && scanType == 1) return true;
+            if (lastScanType == 1 && (scanType == 2 || scanType == 3 || scanType == 5)) return true;
+            if (lastScanType == 2 && scanType == 1) return true;
+            if (lastScanType == 3 && scanType == 4) return true;
+            if (lastScanType == 4 && (scanType == 2 || scanType == 5)) return true;
+            if (lastScanType == 5 && scanType == 6) return true;
+            if (lastScanType == 6 && (scanType == 3 || scanType == 2)) return true;
+
+            return false;
+        }
 
     }
 }
