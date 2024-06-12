@@ -5,9 +5,10 @@ import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 
 @Serializable
-data class ScanOut(
-    @SerializedName("scanId") val scanId: Int,
-    @SerializedName("employeeId")  val employeeId: Int,
+data class ScanIN(
+    @SerializedName("employeeCardNumber") val employeeCardNumber: String,
     @SerializedName("scanDate") val scanDate: String,
-    @SerializedName("scanType")  val scanType: Int
+    @SerializedName("scanType") val scanType: String
 )
+
+
