@@ -1,0 +1,104 @@
+﻿@model STAS.Model.Shift
+
+@{
+    ViewData["Title"] = "ShiftDetails";
+}
+
+<h1>Shift Details</h1>
+
+<div>
+
+    <hr />
+    <dl class="row">
+
+
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.EmployeeName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.EmployeeName)
+        </dd>
+
+
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StartDate)
+        </dt>
+        <dd class="col-sm-10" @((Model.StartDate.TimeOfDay < TimeSpan.Parse("07:55") || Model.StartDate.TimeOfDay > TimeSpan.Parse("08:05")) ? "text-warning" : "")">
+            @{
+                var displayStartDate = (Model.StartDate == DateTime.MinValue) ? "N/A" : Model.StartDate.ToString();
+            }
+            @displayStartDate
+        </dd>
+
+
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StartBreak)
+        </dt>
+        <dd class="col-sm-10 @((Model.StartDate.TimeOfDay < TimeSpan.Parse("10:55") || Model.StartDate.TimeOfDay > TimeSpan.Parse("11:05")) ? "text-warning" : "")">
+            @{
+                var displayStartBreak = (Model.StartBreak == DateTime.MinValue) ? "N/A" : Model.StartBreak.ToString();
+            }
+            @displayStartBreak
+        </dd>
+
+
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.EndBreak)
+        </dt>
+        <dd class="col-sm-10 @((Model.StartDate.TimeOfDay < TimeSpan.Parse("11:10") || Model.StartDate.TimeOfDay > TimeSpan.Parse("11:20")) ? "text-warning" : "")">
+            @{
+                var displayEndBreak = (Model.EndBreak == DateTime.MinValue) ? "N/A" : Model.EndBreak.ToString();
+            }
+            @displayEndBreak
+        </dd>
+
+
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StartLunch)
+        </dt>
+        <dd class="col-sm-10 @((Model.StartDate.TimeOfDay < TimeSpan.Parse("12:55") || Model.StartDate.TimeOfDay > TimeSpan.Parse("13:05")) ? "text-warning" : "")">
+            @{
+                var displayStartLunch = (Model.StartLunch == DateTime.MinValue) ? "N/A" : Model.StartLunch.ToString();
+            }
+            @displayStartLunch
+        </dd>
+
+
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.EndLunch)
+        </dt>
+        <dd class="col-sm-10 @((Model.StartDate.TimeOfDay < TimeSpan.Parse("13:25") || Model.StartDate.TimeOfDay > TimeSpan.Parse("13:35")) ? "text-warning" : "")">
+            @{
+                var displayEndLunch = (Model.EndLunch == DateTime.MinValue) ? "N/A" : Model.EndLunch.ToString();
+            }
+            @displayEndLunch
+        </dd>
+
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.EndDate)
+        </dt>
+        <dd class="col-sm-10 @((Model.StartDate.TimeOfDay < TimeSpan.Parse("16:55") || Model.StartDate.TimeOfDay > TimeSpan.Parse("17:05")) ? "text-warning" : "")">
+            @{
+                var displayEndDate = (Model.EndDate == DateTime.MinValue) ? "N/A" : Model.EndDate.ToString();
+            }
+            @displayEndDate
+        </dd>
+
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DurationFormatted)
+        </dt>
+        <dd class="col-sm-10">
+            @{
+                var displayDurationFormatted = (Model.EndDate == DateTime.MinValue) ? "N/A" : Model.DurationFormatted.ToString();
+            }
+            @displayDurationFormatted
+        </dd>
+
+
+    </dl>
+</div>
+<div>
+    @Html.ActionLink("Back to List", "Shift")
+</div>

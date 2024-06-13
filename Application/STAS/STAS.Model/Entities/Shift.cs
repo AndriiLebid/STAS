@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace STAS.Web.Models
+namespace STAS.Model
 {
     public class Shift
     {
@@ -29,10 +33,13 @@ namespace STAS.Web.Models
         public DateTime EndLunch { get; set; }
 
         [NotMapped]
-        public TimeSpan DurationLunch => EndLunch - StartLunch;
+        public TimeSpan DurationLunch => (EndLunch < StartLunch) ? TimeSpan.Zero : (EndLunch - StartLunch);
 
         [NotMapped]
-        public TimeSpan Duration => EndDate - StartDate - DurationLunch;
+        public TimeSpan DurationFull => EndDate - StartDate;
+
+        [NotMapped]
+        public TimeSpan Duration => DurationFull - DurationLunch;
 
         [NotMapped]
         [Display(Name = "Shift Duration")]

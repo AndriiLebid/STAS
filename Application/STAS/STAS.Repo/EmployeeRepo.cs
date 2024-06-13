@@ -133,6 +133,36 @@ namespace STAS.Repo
             }
         }
 
+
+        /// <summary>
+        /// Get shift
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Shift> GetShiftAsync(int id, DateTime start, DateTime end)
+        {
+            List<Parm> parms = new()
+            {
+                new Parm("@EmployeeId", SqlDbType.Int, id),
+                new Parm("@StartDate", SqlDbType.DateTime2, start),
+                new Parm("@EndDate", SqlDbType.DateTime2, end)
+            };
+
+            DataTable dt = await db.ExecuteAsync("spGetShift", parms);
+
+            Shift shift = new Shift();
+
+            if (dt.Rows.Count != 0)
+            {
+                return PopulateShift(dt);
+            }
+            else
+            {
+                return shift;
+            }
+        }
+
+
+
         /// <summary>
         /// Search Employee By Employee Number
         /// </summary>
@@ -164,8 +194,6 @@ namespace STAS.Repo
 
 
 
-
-
         #region Private Methods
         /// <summary>
         /// Populate Employee object
@@ -184,8 +212,49 @@ namespace STAS.Repo
            emp.RecordVersion = (byte[])dataRow["RecordVersion"];
 
 
-            return emp;
+           return emp;
         }
+
+
+
+        /// <summary>
+        /// Populate shift object
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <returns></returns>
+        private Shift PopulateShift(DataTable dt)
+        {
+            Shift shift = new Shift();
+
+            foreach (var item in dt.AsEnumerable())
+            {
+                switch (Convert.ToInt32(item["ScanType"]))
+                {
+                    case 1:
+                        shift.StartDate = Convert.ToDateTime(item["ScanDate"]);
+                        break;
+                    case 2:
+                        shift.EndDate = Convert.ToDateTime(item["ScanDate"]);
+                        break;
+                    case 3:
+                        shift.StartBreak = Convert.ToDateTime(item["ScanDate"]);
+                        break;
+                    case 4:
+                        shift.EndBreak = Convert.ToDateTime(item["ScanDate"]);
+                        break;
+                    case 5:
+                        shift.StartLunch = Convert.ToDateTime(item["ScanDate"]);
+                        break;
+                    case 6:
+                        shift.EndLunch = Convert.ToDateTime(item["ScanDate"]);
+                        break;
+                }
+            }
+
+
+            return shift;
+        }
+
 
         #endregion
     }

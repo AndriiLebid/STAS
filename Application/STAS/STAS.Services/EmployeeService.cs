@@ -10,6 +10,7 @@ using STAS.Model;
 using STAS.Repo;
 using STAS.Type;
 
+
 namespace STAS.Services
 {
     public class EmployeeService
@@ -81,6 +82,17 @@ namespace STAS.Services
             return emp;
         }
 
+        /// <summary>
+        /// Get Shift by Employee name, start and end date
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Shift> GetShiftAsync(int id, DateTime start, DateTime end)
+        {
+
+            Shift shift = await repo.GetShiftAsync(id, start, end.AddSeconds(1));
+
+            return shift;
+        }
 
 
         #endregion

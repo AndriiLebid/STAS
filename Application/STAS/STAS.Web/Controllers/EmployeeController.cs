@@ -269,15 +269,19 @@ namespace STAS.Web.Controllers
         }
 
         // GET: EmployeeController/ShiftDetails
-        public async Task<ActionResult> ShiftDetails(string name, DateTime start, DateTime end)
+        public async Task<ActionResult> ShiftDetails(int? id, DateTime start, DateTime end)
         {
             try
             {
-                //if (shift == null)
-                //    return new BadRequestResult();
 
+                if (id == null || start == DateTime.MinValue || end == DateTime.MinValue)
+                {
+                    return new BadRequestResult();
+                }
 
-                return View();
+                Shift shift = await service.GetShiftAsync((int)id, start, end);
+
+                return View(shift);
             }
             catch (Exception ex)
             {
