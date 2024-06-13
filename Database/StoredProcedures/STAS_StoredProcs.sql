@@ -398,3 +398,25 @@ BEGIN
 END
 
 GO
+
+-- Shift 
+
+CREATE OR ALTER PROC [dbo].spGetShift
+	@EmployeeId AS INT,
+    @StartDate AS DATETIME2,
+    @EndDate AS DATETIME2
+AS
+BEGIN
+    BEGIN TRY
+        SELECT *
+        FROM RawScan
+        WHERE (@StartDate IS NULL OR ScanDate >= @StartDate)
+          AND (@EndDate IS NULL OR ScanDate <= @EndDate)
+		  AND EmployeeId = @EmployeeId
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END
+GO
+

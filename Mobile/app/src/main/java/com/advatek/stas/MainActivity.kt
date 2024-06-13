@@ -161,6 +161,28 @@ fun ScanCodeForm(modifier: Modifier = Modifier) {
 }
 
 
+//fun handleAction(context: Context, scanCode: String, scanType: String) {
+//    val apiService = RestApiService()
+//
+//    val scan = ScanIN(
+//        employeeCardNumber = scanCode,
+//        scanDate = LocalDateTime.now().toString(),
+//        scanType = scanType
+//    )
+//
+//    apiService.addScan(scan) {
+//        if (it?.scanId != null) {
+//            Toast.makeText(context, "Scan added successfully with ID: ${it.scanId}", Toast.LENGTH_LONG).show()
+//        } else {
+//
+//            if(!scan.employeeCardNumber.isNullOrEmpty()){
+//                val intent = Intent(context, ManualEnterActivity::class.java)
+//                context.startActivity(intent)
+//            }
+//        }
+//    }
+//}
+
 fun handleAction(context: Context, scanCode: String, scanType: String) {
     val apiService = RestApiService()
 
@@ -174,12 +196,15 @@ fun handleAction(context: Context, scanCode: String, scanType: String) {
         if (it?.scanId != null) {
             Toast.makeText(context, "Scan added successfully with ID: ${it.scanId}", Toast.LENGTH_LONG).show()
         } else {
-
-            val intent = Intent(context, ManualEnterActivity::class.java)
-            context.startActivity(intent)
+            if (!scanCode.isNullOrEmpty()) {
+                val intent = Intent(context, ManualEnterActivity::class.java)
+                intent.putExtra("scanCode", scanCode)
+                context.startActivity(intent)
+            }
         }
     }
 }
+
 
 fun handleInAction(context: Context, scanCode: String) {
     handleAction(context, scanCode, "IN")
