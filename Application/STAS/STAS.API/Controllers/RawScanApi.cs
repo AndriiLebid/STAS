@@ -200,6 +200,40 @@ namespace STAS.API.Controllers
             }
         }
 
+
+
+        /// <summary>
+        /// Check connection
+        /// </summary>
+        /// <param></param>
+        /// <returns></returns>
+
+        [HttpGet("check")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CheckServer()
+        {
+            try
+            {
+                var scan = true; 
+                if (scan)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+
+
         #endregion
 
 
