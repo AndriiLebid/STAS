@@ -24,6 +24,8 @@ import com.advatek.stas.network.RestApiService
 import com.advatek.stas.ui.theme.STASTheme
 import java.time.LocalDateTime
 import android.content.Intent
+import com.advatek.stas.network.ServiceBuilder
+import com.advatek.stas.network.connectionCheck
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,8 +53,6 @@ fun RealTimeClock() {
         modifier = Modifier.padding(16.dp)
     )
 }
-
-
 
 @Composable
 fun ScanCodeForm(modifier: Modifier = Modifier) {
@@ -160,30 +160,13 @@ fun ScanCodeForm(modifier: Modifier = Modifier) {
     }
 }
 
-
-//fun handleAction(context: Context, scanCode: String, scanType: String) {
-//    val apiService = RestApiService()
-//
-//    val scan = ScanIN(
-//        employeeCardNumber = scanCode,
-//        scanDate = LocalDateTime.now().toString(),
-//        scanType = scanType
-//    )
-//
-//    apiService.addScan(scan) {
-//        if (it?.scanId != null) {
-//            Toast.makeText(context, "Scan added successfully with ID: ${it.scanId}", Toast.LENGTH_LONG).show()
-//        } else {
-//
-//            if(!scan.employeeCardNumber.isNullOrEmpty()){
-//                val intent = Intent(context, ManualEnterActivity::class.java)
-//                context.startActivity(intent)
-//            }
-//        }
-//    }
-//}
-
 fun handleAction(context: Context, scanCode: String, scanType: String) {
+
+    if (!connectionCheck(context)) {
+        Toast.makeText(context, "No internet connection available", Toast.LENGTH_LONG).show()
+        return
+    }
+
     val apiService = RestApiService()
 
     val scan = ScanIN(

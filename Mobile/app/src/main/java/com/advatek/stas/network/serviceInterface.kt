@@ -19,4 +19,7 @@ interface RestApi {
 
     @GET("api/scan/getLastScanByEmployeeId/{employeeId}")
     fun getLastScanByEmployeeId(@Path("employeeId") employeeId: Int): Call<Scan>
+
+    @GET("api/scan/check")
+    fun checkServer(): Call<Void>
 }
