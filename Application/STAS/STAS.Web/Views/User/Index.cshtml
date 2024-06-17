@@ -1,0 +1,63 @@
+﻿@model IEnumerable<STAS.Model.User>
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "Employees List";
+    var userRole = HttpContextAccessor.HttpContext.Session.GetString("Role");
+    bool isAdmin = (userRole == "Administrator");
+}
+
+<div class="col-md-12">
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger text-center">
+            @TempData["Error"]
+        </div>
+    }
+</div>
+
+
+<div class="col-md-12">
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success text-center">
+            @TempData["Success"]
+        </div>
+    }
+</div>
+
+<h1>User List</h1>
+
+<p>
+    <a class="btn btn-success" style="text-decoration: none;" asp-action="Create">Create User</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+
+            <td>
+                    <div class="btn btn-warning">@Html.ActionLink("Edit", "Edit", new { id=item.Id }, new { style = "text-decoration: none;" }) </div>
+                    <div class="btn btn-danger">@Html.ActionLink("Delete", "Delete", new { id=item.Id }, new { @class = "text-light", style = "text-decoration: none;" })</div>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -142,7 +142,7 @@ namespace STAS.Repo
         /// </summary>
         /// <param name="employeeId"></param>
         /// <returns></returns>
-        public Scan GetLastScan(int employeeId)
+        public Scan? GetLastScan(int employeeId)
         {
             List<Parm> parms = new()
             {
@@ -159,7 +159,7 @@ namespace STAS.Repo
             }
             else
             {
-                return scans;
+                return null;
             }
         }
 

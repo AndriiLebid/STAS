@@ -48,6 +48,69 @@ END
 
 GO
 
+-- Get password salt
+
+CREATE OR ALTER PROC [dbo].[spGetAllUser]
+AS
+BEGIN
+	BEGIN TRY
+		SELECT * FROM [User]
+	END TRY
+	BEGIN CATCH
+	;THROW
+	END CATCH
+END
+
+GO
+
+-- Get password salt
+
+CREATE OR ALTER PROC [dbo].[spGetUserById]
+@UserId AS INT
+AS
+BEGIN
+	BEGIN TRY
+		SELECT * FROM [User] WHERE [User].UserId = @UserId
+	END TRY
+	BEGIN CATCH
+	;THROW
+	END CATCH
+END
+
+GO
+
+-- Get password salt
+
+CREATE OR ALTER PROC [dbo].[spGetRole]
+AS
+BEGIN
+	BEGIN TRY
+		SELECT * FROM [Role]
+	END TRY
+	BEGIN CATCH
+	;THROW
+	END CATCH
+END
+
+GO
+
+-- Delete user record
+
+CREATE OR ALTER PROC [dbo].[spDeleteUser]
+@UserId AS INT
+AS
+BEGIN
+	BEGIN TRY
+		DELETE FROM [User] WHERE UserId = @UserId;
+	END TRY
+	BEGIN CATCH
+	;THROW
+	END CATCH
+END
+
+GO
+
+
 
 -- Employee procedures
 -----------------------------------------

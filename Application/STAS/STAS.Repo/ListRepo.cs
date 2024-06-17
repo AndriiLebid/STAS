@@ -40,6 +40,23 @@ namespace STAS.Repo
         }
 
         /// <summary>
+        /// Get All User Type
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<UserType>> GetUserType()
+        {
+            DataTable dt = db.Execute("spGetRole");
+
+            return dt.AsEnumerable().Select(row =>
+                new UserType
+                {
+                    TypeId = Convert.ToInt32(row["TypeId"]),
+                    TypeName = row["TypeName"].ToString()
+                }).ToList();
+
+        }
+
+        /// <summary>
         /// Get All Employee
         /// </summary>
         /// <returns></returns>

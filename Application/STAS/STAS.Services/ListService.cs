@@ -28,6 +28,15 @@ namespace STAS.Services
         }
 
         /// <summary>
+        /// Get all user type
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<UserType>> GetUserType()
+        {
+            return await repo.GetUserType();
+        }
+
+        /// <summary>
         /// Get next, current and previous records from scan table.
         /// </summary>
         /// <param name="scan"></param>

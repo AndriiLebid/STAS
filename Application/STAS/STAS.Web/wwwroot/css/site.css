@@ -41,3 +41,8 @@ footer {
     line-height: normal;
 }
 
+
+body, table {
+    color: #cce4f7 !important;
+}
+

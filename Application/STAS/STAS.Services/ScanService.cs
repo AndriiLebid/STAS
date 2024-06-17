@@ -114,10 +114,10 @@ namespace STAS.Services
         /// <returns></returns>
         private bool ValidationScan(Scan scan)
         {
-            Scan lastScan = repo.GetLastScan(scan.EmployeeId);
+            Scan? lastScan = repo.GetLastScan(scan.EmployeeId);
             if (lastScan == null && scan.ScanType == 1) return true;
 
-            if (lastScan.ScanDate <= scan.ScanDate) 
+            if (lastScan!.ScanDate <= scan.ScanDate) 
             {
                 if (ValidateType(lastScan.ScanType, scan.ScanType))
                 {
