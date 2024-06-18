@@ -45,13 +45,13 @@ namespace STAS.Repo
         /// <returns></returns>
         public async Task<List<UserType>> GetUserType()
         {
-            DataTable dt = db.Execute("spGetRole");
+            DataTable dt = await db.ExecuteAsync("spGetRole");
 
             return dt.AsEnumerable().Select(row =>
                 new UserType
                 {
-                    TypeId = Convert.ToInt32(row["TypeId"]),
-                    TypeName = row["TypeName"].ToString()
+                    TypeId = Convert.ToInt32(row["RoleId"]),
+                    TypeName = row["RoleName"].ToString()
                 }).ToList();
 
         }

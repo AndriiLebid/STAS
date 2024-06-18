@@ -12,7 +12,7 @@ namespace STAS.Web.Controllers
     {
         private readonly UserService service = new();
         private readonly ListService list = new();
-
+   
         // GET: UserController
         public async Task<ActionResult> Index()
         {
@@ -57,38 +57,221 @@ namespace STAS.Web.Controllers
         // POST: UserController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create(UserVM user)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                if (!ModelState.IsValid)
+                {
+                    return View(user);
+                }
+
+                User usr = new User();
+                usr.Name = user.Name;
+                
+
+                if (PasswordUtility.PasswordCheck(user.Password))
+                {
+                    usr.Salt = PasswordUtility.GenerateSalt();
+                    usr.Password = PasswordUtility.HashToSHA256(user.Password, usr.Salt);
+                    usr.UserType = user.UserType;
+                }
+                else 
+                {
+                    usr.Errors.Add(new ValidationError("The password should be stronger.", Type.ErrorType.Business));
+                    string errorMessage = "";
+                    foreach (var error in usr.Errors)
+                    {
+                        errorMessage += error.Description + " ";
+                    }
+                    ViewBag.ErrorMessage = errorMessage;
+                    user.UserTypesList = await GetUserTypes();
+                    return View(user);
+                }
+
+                var result = await service.CreateUser(usr);
+
+                if (result.Errors.Count != 0)
+                {
+                    string errorMessage = "";
+                    foreach (var error in result.Errors)
+                    {
+                        errorMessage += error.Description + " ";
+                    }
+                    ViewBag.ErrorMessage = errorMessage;
+                    user.UserTypesList = await GetUserTypes();
+                    return View(user);
+                }
+
+                TempData["Success"] = "User Created successfully.";
+                return RedirectToAction("Index", "User");
             }
-            catch
+            catch(Exception ex)
             {
-                return View();
+                TempData["Error"] = ex.Message.ToString();
+                return View(user);
             }
         }
 
         // GET: UserController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            return View();
+            //check login
+            var userName = HttpContext.Session.GetString("UserName");
+
+            if (userName == null)
+            {
+                return RedirectToAction("Login", "Login");
+            }
+
+            try
+            {
+                User user = await service.GetUserById(id);
+
+                UserVM userVM = new UserVM();
+
+                userVM.Id = user.Id;
+                userVM.Name = user.Name;
+                userVM.UserTypesList = await GetUserTypes();
+
+                return View(userVM);
+            }
+            catch (Exception ex)
+            {
+                return ShowError(ex);
+            }
         }
 
         // POST: UserController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(UserVM user)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                if (!ModelState.IsValid)
+                {
+                    return View(user);
+                }
+
+                User usr = new User();
+
+                usr.Id = user.Id;
+                usr.Name = user.Name;
+                usr.UserType = user.UserType;
+
+                //user.UserTypesList = await GetUserTypes();
+
+
+                var result = await service.EditUser(usr);
+
+                if (result.Errors.Count != 0)
+                {
+                    string errorMessage = "";
+                    foreach (var error in result.Errors)
+                    {
+                        errorMessage += error.Description + " ";
+                    }
+                    ViewBag.ErrorMessage = errorMessage;
+                    user.UserTypesList = await GetUserTypes();
+                    return View(user);
+                }
+
+                TempData["Success"] = "User Edited successfully.";
+                return RedirectToAction("Index", "User");
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                TempData["Error"] = ex.Message.ToString();
+                return View(user);
             }
         }
+
+        //----------------------------------
+
+        // GET: UserController/ChangePassword/5
+        public async Task<ActionResult> ChangePassword(int id)
+        {
+            //check login
+            var userName = HttpContext.Session.GetString("UserName");
+
+            if (userName == null)
+            {
+                return RedirectToAction("Login", "Login");
+            }
+
+            try
+            {
+                User user = await service.GetUserById(id);
+
+                UserVM userVM = new UserVM();
+
+                userVM.Id = user.Id;
+                userVM.Name = user.Name;
+
+                return View(userVM);
+            }
+            catch (Exception ex)
+            {
+                return ShowError(ex);
+            }
+        }
+
+        // POST: UserController/ChangePassword/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ChangePassword(UserVM user)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return View(user);
+                }
+
+                User usr = new User();
+
+                usr.Id = user.Id;
+                var password = user.Password;
+
+                if (PasswordUtility.PasswordCheck(user.Password))
+                {
+                    usr.Salt = PasswordUtility.GenerateSalt();
+                    usr.Password = PasswordUtility.HashToSHA256(user.Password, usr.Salt);
+                    usr.UserType = user.UserType;
+                }
+                else
+                {
+                    new Exception("The password should be stronger.");
+                }
+
+                var result = await service.EditUserPassword(usr);
+
+                if (result.Errors.Count != 0)
+                {
+                    string errorMessage = "";
+                    foreach (var error in result.Errors)
+                    {
+                        errorMessage += error.Description + " ";
+                    }
+                    ViewBag.ErrorMessage = errorMessage;
+                    return View(user);
+                }
+
+                TempData["Success"] = "User Edited successfully.";
+                return RedirectToAction("Index", "User");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message.ToString();
+                return View(user);
+            }
+        }
+
+
+
+
+        //----------------------------------
 
         // GET: UserController/Delete/5
         public async Task<ActionResult> Delete(int id)
@@ -162,7 +345,7 @@ namespace STAS.Web.Controllers
 
         private async Task<IEnumerable<SelectListItem>>? GetUserTypes()
         {
-            var types = await new ListService().GetUserType();
+            var types = await list.GetUserType();
 
             return types.Select(t =>
             new SelectListItem

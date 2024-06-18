@@ -1,8 +1,9 @@
-﻿@model IEnumerable<STAS.Model.User>
+﻿@model IEnumerable<STAS.Model.Employee>
+
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
 @{
-    ViewData["Title"] = "Employees List";
+    ViewData["Title"] = "Restore Employees List";
     var userRole = HttpContextAccessor.HttpContext.Session.GetString("Role");
     bool isAdmin = (userRole == "Administrator");
 }
@@ -26,19 +27,20 @@
     }
 </div>
 
-<h1>User List</h1>
 
-<p>
-    <a class="btn btn-success" style="text-decoration: none;" asp-action="Create">Create User</a>
-</p>
+<h1>Restore</h1>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
+                @Html.DisplayNameFor(model => model.EmployeeId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.EmployeeNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FullName)
             </th>
             <th></th>
         </tr>
@@ -47,16 +49,20 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Id)
+                @Html.DisplayFor(modelItem => item.EmployeeId)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(modelItem => item.EmployeeNumber)
             </td>
-
             <td>
-                    <div class="btn btn-warning">@Html.ActionLink("Edit", "Edit", new { id=item.Id }, new { style = "text-decoration: none;" }) </div>
-                    <div class="btn btn-warning">@Html.ActionLink("Change Password", "ChangePassword", new { id = item.Id }, new { style = "text-decoration: none;" })</div>
-                    <div class="btn btn-danger">@Html.ActionLink("Delete", "Delete", new { id=item.Id }, new { @class = "text-light", style = "text-decoration: none;" })</div>
+                @Html.DisplayFor(modelItem => item.FullName)
+            </td>
+            <td>
+                    <form action="Restore" method="post" >
+                        @Html.AntiForgeryToken()
+                        <input type="hidden"  name="EmployeeId" value="@item.EmployeeId" />
+                        <input type="submit" value="Restore" class="btn btn-primary" />
+                    </form>
             </td>
         </tr>
 }

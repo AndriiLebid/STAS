@@ -58,6 +58,89 @@ namespace STAS.Web.Controllers
             
         }
 
+        // GET: EmployeeController
+        public async Task<ActionResult> Restore(int? page)
+        {
+
+            //check login
+            var userName = HttpContext.Session.GetString("UserName");
+
+            if (userName == null)
+            {
+                return RedirectToAction("Login", "Login");
+            }
+
+            // Create pegination consts
+            const int pageSize = 8;
+            int pageNumber = (page ?? 1);
+
+            try
+            {
+                List<Employee> employees = await service.GetAllDeletedEmployeeAsync();
+
+                if (employees.Count == 0)
+                {
+                    TempData["Error"] = "You don't have any deleted employees.";
+                }
+
+                var pagedEmp = employees.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                ViewBag.TotalPages = (int)Math.Ceiling((double)employees.Count / pageSize);
+                ViewBag.CurrentPage = pageNumber;
+
+                return View(pagedEmp);
+            }
+            catch (Exception ex)
+            {
+                return ShowError(ex);
+            }
+
+        }
+
+
+        // POST: EmployeeController/Restore
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Restore(int employeeId)
+        {
+            try
+            {
+                
+                Employee employee = await service.SearchEmployeeByIdAsync(employeeId);
+
+                if (!ModelState.IsValid)
+                {
+                    return View(employee);
+                }
+
+                employee.TypeEmployeeId = 2;
+                var result = await service.RestoreEmployeeAsync(employee);
+
+                if (result.Errors.Count != 0)
+                {
+                    string errorMessage = "";
+                    foreach (var error in result.Errors)
+                    {
+                        errorMessage += error.Description + " ";
+                    }
+                    ViewBag.ErrorMessage = errorMessage;
+                    return RedirectToAction("Restore", "Employee");
+                }
+
+                TempData["Success"] = "Employee Restored successfully.";
+                return RedirectToAction("Restore", "Employee");
+
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message.ToString();
+                return RedirectToAction("Restore", "Employee");
+            }
+        }
+
+
+
+
+
         // GET: EmployeeController Search method
         public async Task<ActionResult> Search(string? startDate, string? endDate, int? employeeId, int? status)
         {

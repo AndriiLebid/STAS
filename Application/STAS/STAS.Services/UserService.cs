@@ -32,6 +32,30 @@ namespace STAS.Services
             return users;
         }
 
+        public async Task<User>? CreateUser(User user)
+        {
+
+            User? users = await repo.CreateUserAsync(user);
+
+            return users;
+        }
+
+        public async Task<User>? EditUser(User user)
+        {
+
+            User? users = await repo.EditUserAsync(user);
+
+            return users;
+        }
+
+        public async Task<User>? EditUserPassword(User user)
+        {
+
+            User? users = await repo.EditUserPassword(user);
+
+            return users;
+        }
+
 
         public async Task<int> DeleteUserAsync(int id)
         {

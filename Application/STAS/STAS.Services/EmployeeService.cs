@@ -58,6 +58,23 @@ namespace STAS.Services
         }
 
         /// <summary>
+        /// Update employee
+        /// </summary>
+        /// <param name="emp"></param>
+        /// <returns></returns>
+        public async Task<Employee> RestoreEmployeeAsync(Employee emp)
+        {
+
+            if (ValidateEmployee(emp))
+            {
+                return await repo.RestoreEmployeeAsync(emp);
+            }
+
+            return emp;
+
+        }
+
+        /// <summary>
         /// Get Employee By Id
         /// </summary>
         /// <param name="id"></param>
@@ -78,6 +95,20 @@ namespace STAS.Services
             List<Employee> emp = await repo.GetAllEmployeesAsync();
 
             emp = emp.Where(e => e.TypeEmployeeId == 2).OrderBy(em => em.FullName).ToList();
+
+            return emp;
+        }
+
+        /// <summary>
+        /// Get All Deleted employee
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<Employee>> GetAllDeletedEmployeeAsync()
+        {
+
+            List<Employee> emp = await repo.GetAllEmployeesAsync();
+
+            emp = emp.Where(e => e.TypeEmployeeId == 1).OrderBy(em => em.FullName).ToList();
 
             return emp;
         }

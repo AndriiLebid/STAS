@@ -68,6 +68,84 @@ namespace STAS.Repo
         }
 
 
+        /// <summary>
+        /// Create user
+        /// </summary>
+        /// <returns></returns>
+        public async Task<User>? CreateUserAsync(User user)
+        {
+            List<Parm> parms = new()
+            {
+                new Parm("@UserId", SqlDbType.Int, null, 0, ParameterDirection.Output),
+                new Parm("@UserName", SqlDbType.NVarChar, user.Name),
+                new Parm("@Password", SqlDbType.NVarChar, user.Password),
+                new Parm("@Salt", SqlDbType.Binary, user.Salt),
+                new Parm("@UserTypeId", SqlDbType.Int, user.UserType)
+            };
+
+            if (await db.ExecuteNonQueryAsync("spAddUser", parms) > 0)
+            {
+                user.Id = (int?)parms.FirstOrDefault(p => p.Name == "@UserId")?.Value ?? 0;
+            }
+            else
+            {
+                throw new DataException("There was an error adding an user.");
+            }
+
+            return user;
+        }
+
+        /// <summary>
+        /// Edit user
+        /// </summary>
+        /// <returns></returns>
+        public async Task<User>? EditUserAsync(User user)
+        {
+            List<Parm> parms = new()
+            {
+                new Parm("@UserId", SqlDbType.Int, user.Id),
+                new Parm("@UserName", SqlDbType.NVarChar, user.Name),
+                new Parm("@UserTypeId", SqlDbType.Int, user.UserType)
+            };
+
+            if (await db.ExecuteNonQueryAsync("spEditUser", parms) > 0)
+            {
+                user.Id = (int?)parms.FirstOrDefault(p => p.Name == "@UserId")?.Value ?? 0;
+            }
+            else
+            {
+                throw new DataException("There was an error edited an user.");
+            }
+
+            return user;
+        }
+
+        /// <summary>
+        /// Edit Password user
+        /// </summary>
+        /// <returns></returns>
+        public async Task<User>? EditUserPassword(User user)
+        {
+            List<Parm> parms = new()
+            {
+                new Parm("@UserId", SqlDbType.Int, user.Id),
+                new Parm("@Salt", SqlDbType.Binary, user.Salt),
+                new Parm("@Password", SqlDbType.NVarChar, user.Password)
+            };
+
+            if (await db.ExecuteNonQueryAsync("spEditUserPassword", parms) > 0)
+            {
+                user.Id = (int?)parms.FirstOrDefault(p => p.Name == "@UserId")?.Value ?? 0;
+            }
+            else
+            {
+                throw new DataException("There was an error edited a password.");
+            }
+
+            return user;
+        }
+
+
         public async Task<int> DeleteUserAsync(int id)
         {
             List<Parm> parms = new()

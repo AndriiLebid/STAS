@@ -84,11 +84,37 @@ namespace STAS.Repo
 
         }
 
-       /// <summary>
-       /// Get employee by ID
-       /// </summary>
-       /// <param name="id"></param>
-       /// <returns></returns>
+
+        /// <summary>
+        /// Restore Employee
+        /// </summary>
+        /// <param name="emp"></param>
+        /// <returns></returns>
+        /// <exception cref="DataException"></exception>
+        public async Task<Employee> RestoreEmployeeAsync(Employee emp)
+        {
+
+            List<Parm> parms = new()
+            {
+                new Parm("@EmployeeId", SqlDbType.Int, emp.EmployeeId),
+                new Parm("@EmployeeTypeId", SqlDbType.Int, emp.TypeEmployeeId),
+                new Parm("@RecordVersion", SqlDbType.Timestamp, emp.RecordVersion)
+            };
+
+            if (await db.ExecuteNonQueryAsync("spRetoreEmployee", parms) != 1)
+            {
+                throw new DataException("An employee update error occurred.");
+            }
+
+            return emp;
+
+        }
+
+        /// <summary>
+        /// Get employee by ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<Employee> SearchEmployeeByIdAsync(int id)
         {
 

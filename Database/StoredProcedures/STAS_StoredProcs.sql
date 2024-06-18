@@ -63,6 +63,108 @@ END
 
 GO
 
+-- Create new user
+
+CREATE OR ALTER PROC [dbo].[spAddUser]
+	@UserId AS INT OUTPUT,
+	@UserName AS NVARCHAR(30),
+	@Password AS CHAR(64),
+	@Salt AS BINARY(16),
+	@UserTypeId AS INT
+AS
+BEGIN
+	BEGIN TRANSACTION
+	BEGIN TRY
+		
+		 INSERT INTO [dbo].[User] (
+            [UserName],
+            [UserRole],
+            [Password],
+            [PasswordSalt]	
+        )
+        VALUES (
+            @UserName,
+            @UserTypeId,
+            @Password,
+            @Salt
+        );
+
+		SET @UserId = SCOPE_IDENTITY();
+		COMMIT TRANSACTION;
+
+	END TRY
+	BEGIN CATCH
+	IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
+	END CATCH
+END
+
+GO
+
+-- Edit user
+
+CREATE OR ALTER PROC [dbo].[spEditUser]
+	@UserId AS INT,
+	@UserName AS NVARCHAR(30),
+	@UserTypeId AS INT
+AS
+BEGIN
+	BEGIN TRY
+	BEGIN TRANSACTION
+		
+		 UPDATE [User]
+			SET
+				UserName = @UserName,
+				UserRole = @UserTypeId
+			WHERE 
+				UserId = @UserId;
+		SET @UserId = SCOPE_IDENTITY();
+
+		COMMIT TRANSACTION;
+
+	END TRY
+	BEGIN CATCH
+	IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
+	END CATCH
+END
+
+GO
+
+
+-- Edit user password
+
+CREATE OR ALTER PROC [dbo].[spEditUserPassword]
+	@UserId AS INT,
+	@Salt AS BINARY(16),
+	@Password AS CHAR(64)
+AS
+BEGIN
+	BEGIN TRY
+	BEGIN TRANSACTION
+		
+		 UPDATE [User]
+			SET
+				PasswordSalt = @Salt,
+				[Password] = @Password
+			WHERE 
+				UserId = @UserId;
+		SET @UserId = SCOPE_IDENTITY();
+
+		COMMIT TRANSACTION;
+
+	END TRY
+	BEGIN CATCH
+	IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
+	END CATCH
+END
+
+GO
+
 -- Get password salt
 
 CREATE OR ALTER PROC [dbo].[spGetUserById]
@@ -79,7 +181,7 @@ END
 
 GO
 
--- Get password salt
+-- Get Role
 
 CREATE OR ALTER PROC [dbo].[spGetRole]
 AS
@@ -248,6 +350,45 @@ BEGIN
 				FirstName = @FirstName,
 				MiddleInitial = @MiddleInitial,
 				LastName = @LastName,
+				TypeEmployeeId = @EmployeeTypeId
+			WHERE 
+				EmployeeId = @EmployeeId;
+      
+
+		SET @EmployeeId = SCOPE_IDENTITY();
+
+		COMMIT TRANSACTION;
+
+	END TRY
+	BEGIN CATCH
+	IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
+	END CATCH
+END
+
+GO
+
+
+-- Restore employee
+
+CREATE OR ALTER PROC [dbo].[spRetoreEmployee]
+	@EmployeeId AS INT,
+	@EmployeeTypeId AS INT,
+	@RecordVersion ROWVERSION
+AS
+BEGIN
+	
+	BEGIN TRY
+	DECLARE @CurrentRecordVersion ROWVERSION = (SELECT Employee.RecordVersion FROM Employee WHERE EmployeeId = @EmployeeId);
+        IF @RecordVersion <> @CurrentRecordVersion
+            THROW 51002, 'The record has been updated since you last retrieved it.', 1;
+
+
+	BEGIN TRANSACTION
+		
+		 UPDATE Employee
+			SET
 				TypeEmployeeId = @EmployeeTypeId
 			WHERE 
 				EmployeeId = @EmployeeId;
