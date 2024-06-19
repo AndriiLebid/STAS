@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id ("kotlin-kapt")
 }
 
 android {
@@ -61,17 +62,18 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.runtime.ktx)
 
-//    implementation (libs.retrofit)
     implementation (libs.converter.gson)
     implementation (libs.kotlinx.coroutines.android)
     implementation (libs.kotlinx.coroutines.core)
     implementation(libs.logging.interceptor)
     implementation(libs.kotlinx.serialization.json)
 
+    implementation ("androidx.room:room-runtime:2.5.2")
+    kapt ("androidx.room:room-compiler:2.5.2")
+    implementation ("androidx.room:room-ktx:2.5.2")
+
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
-
-
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

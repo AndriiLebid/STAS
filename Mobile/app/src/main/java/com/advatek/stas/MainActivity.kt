@@ -24,17 +24,26 @@ import com.advatek.stas.network.RestApiService
 import com.advatek.stas.ui.theme.STASTheme
 import java.time.LocalDateTime
 import android.content.Intent
+import androidx.room.Room
+import com.advatek.stas.Datasource.AppDatabase
+import com.advatek.stas.Datasource.ScanEntity
 import com.advatek.stas.network.ServiceBuilder
 import com.advatek.stas.network.connectionCheck
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+    private lateinit var db: AppDatabase
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "stas-db").build()
+        syncLocalData(this, db)
         setContent {
             STASTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    ScanCodeForm(modifier = Modifier.padding(innerPadding))
+                    ScanCodeForm(modifier = Modifier.padding(innerPadding), db)
                 }
             }
         }
@@ -55,7 +64,7 @@ fun RealTimeClock() {
 }
 
 @Composable
-fun ScanCodeForm(modifier: Modifier = Modifier) {
+fun ScanCodeForm(modifier: Modifier = Modifier, db: AppDatabase) {
     var scanCode by remember { mutableStateOf("") }
     val context = LocalContext.current
 
@@ -91,7 +100,7 @@ fun ScanCodeForm(modifier: Modifier = Modifier) {
                     modifier = Modifier.weight(1f)
                 ) {
                     Button(
-                        onClick = { handleInAction(context, scanCode); scanCode = "" },
+                        onClick = { handleInAction(context, scanCode, db); scanCode = "" },
                         modifier = Modifier.fillMaxWidth(),
                         colors = inButtonColors,
                         shape = RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp)
@@ -100,7 +109,7 @@ fun ScanCodeForm(modifier: Modifier = Modifier) {
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Button(
-                        onClick = { handleOutAction(context, scanCode); scanCode = "" },
+                        onClick = { handleOutAction(context, scanCode, db); scanCode = "" },
                         modifier = Modifier.fillMaxWidth(),
                         colors = outButtonColors,
                         shape = RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp)
@@ -112,7 +121,7 @@ fun ScanCodeForm(modifier: Modifier = Modifier) {
                     modifier = Modifier.weight(1f)
                 ) {
                     Button(
-                        onClick = { handleBreakInAction(context, scanCode); scanCode = "" },
+                        onClick = { handleBreakInAction(context, scanCode, db); scanCode = "" },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)
                     ) {
@@ -120,7 +129,7 @@ fun ScanCodeForm(modifier: Modifier = Modifier) {
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Button(
-                        onClick = { handleBreakOutAction(context, scanCode); scanCode = "" },
+                        onClick = { handleBreakOutAction(context, scanCode, db); scanCode = "" },
                         modifier = Modifier.fillMaxWidth(),
                         colors = grayButtonColors,
                         shape = RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)
@@ -130,7 +139,7 @@ fun ScanCodeForm(modifier: Modifier = Modifier) {
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Button(
-                        onClick = { handleLunchInAction(context, scanCode); scanCode = "" },
+                        onClick = { handleLunchInAction(context, scanCode, db); scanCode = "" },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)
                     ) {
@@ -138,7 +147,7 @@ fun ScanCodeForm(modifier: Modifier = Modifier) {
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Button(
-                        onClick = { handleLunchOutAction(context, scanCode); scanCode = "" },
+                        onClick = { handleLunchOutAction(context, scanCode, db); scanCode = "" },
                         modifier = Modifier.fillMaxWidth(),
                         colors = grayButtonColors,
                         shape = RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)
@@ -160,12 +169,24 @@ fun ScanCodeForm(modifier: Modifier = Modifier) {
     }
 }
 
-fun handleAction(context: Context, scanCode: String, scanType: String) {
+fun handleAction(context: Context, scanCode: String, scanType: String, db: AppDatabase) {
 
     if (!connectionCheck(context)) {
         Toast.makeText(context, "No internet connection available", Toast.LENGTH_LONG).show()
+        // Stored date locally
+        val scan = ScanEntity(
+            employeeCardNumber = scanCode,
+            scanDate = LocalDateTime.now().toString(),
+            scanType = scanType
+        )
+        CoroutineScope(Dispatchers.IO).launch {
+            db.scanDao().insert(scan)
+        }
+
         return
     }
+
+    syncLocalData(context, db)
 
     val apiService = RestApiService()
 
@@ -186,28 +207,30 @@ fun handleAction(context: Context, scanCode: String, scanType: String) {
             }
         }
     }
+
+
 }
 
 
-fun handleInAction(context: Context, scanCode: String) {
-    handleAction(context, scanCode, "IN")
+fun handleInAction(context: Context, scanCode: String, db: AppDatabase) {
+    handleAction(context, scanCode, "IN", db)
 }
 
-fun handleOutAction(context: Context, scanCode: String) {
-    handleAction(context, scanCode, "OUT")
+fun handleOutAction(context: Context, scanCode: String, db: AppDatabase) {
+    handleAction(context, scanCode, "OUT", db)
 }
 
-fun handleBreakInAction(context: Context, scanCode: String) {
-    handleAction(context, scanCode, "BreakStart")
+fun handleBreakInAction(context: Context, scanCode: String, db: AppDatabase) {
+    handleAction(context, scanCode, "BreakStart", db)
 }
-fun handleBreakOutAction(context: Context, scanCode: String) {
-    handleAction(context, scanCode, "BreakEnd")
+fun handleBreakOutAction(context: Context, scanCode: String, db: AppDatabase) {
+    handleAction(context, scanCode, "BreakEnd", db)
 }
-fun handleLunchInAction(context: Context, scanCode: String) {
-    handleAction(context, scanCode, "LunchStart")
+fun handleLunchInAction(context: Context, scanCode: String, db: AppDatabase) {
+    handleAction(context, scanCode, "LunchStart", db)
 }
-fun handleLunchOutAction(context: Context, scanCode: String) {
-    handleAction(context, scanCode, "LunchEnd")
+fun handleLunchOutAction(context: Context, scanCode: String, db: AppDatabase) {
+    handleAction(context, scanCode, "LunchEnd", db)
 }
 
 
@@ -228,11 +251,38 @@ fun handleGetLastScan(employeeId: Int) {
 }
 
 
+fun syncLocalData(context: Context, db: AppDatabase) {
+    if (connectionCheck(context)) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val scans = db.scanDao().getAllScans()
+            val apiService = RestApiService()
+            scans.forEach { scan ->
+                val scanIN = ScanIN(
+                    employeeCardNumber = scan.employeeCardNumber,
+                    scanDate = scan.scanDate,
+                    scanType = scan.scanType
+                )
+                apiService.addScan(scanIN) {
+//                    if (it?.scanId != null) {
+//                        db.scanDao().deleteById(scanId = scan.id)
+//                    }
+                }
+            }
+            db.scanDao().deleteAll()
+        }
+    }
+}
+
+
+
 @Preview(showBackground = true)
 @Composable
 fun ScanCodeFormPreview() {
+    val context = LocalContext.current
+    val db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).build()
     STASTheme {
-        ScanCodeForm()
+        ScanCodeForm(db = db)
     }
 }
+
 

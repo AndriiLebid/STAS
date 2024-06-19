@@ -34,7 +34,7 @@ namespace STAS.Repo
                 new Parm("@ScanId", SqlDbType.Int, null, 0, ParameterDirection.Output),
                 new Parm("@EmployeeId", SqlDbType.NVarChar, scan.EmployeeId),
                 new Parm("@ScanTypeId", SqlDbType.Int, scan.ScanType),
-                new Parm("@ScanDate", SqlDbType.DateTime2, DateTime.Now),
+                new Parm("@ScanDate", SqlDbType.DateTime2, scan.ScanDate),
             };
 
             if (await db.ExecuteNonQueryAsync("spAddScan", parms) > 0)
