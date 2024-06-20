@@ -87,26 +87,26 @@ namespace STAS.Repo
         /// </summary>
         /// <param name="employeeId"></param>
         /// <returns></returns>
-        public List<Scan> SearchScanByEmployeeId(int employeeId)
-        {
-            List<Parm> parms = new()
-            {
-                new Parm("@EmployeeId", SqlDbType.Int, employeeId),
-            };
+        //public List<Scan> SearchScanByEmployeeId(int employeeId)
+        //{
+        //    List<Parm> parms = new()
+        //    {
+        //        new Parm("@EmployeeId", SqlDbType.Int, employeeId),
+        //    };
 
-            DataTable dt = db.Execute("spSearchScanByEmployeeId", parms);
+        //    DataTable dt = db.Execute("spSearchScanByEmployeeId", parms);
 
-            List<Scan> scans = new List<Scan>();
+        //    List<Scan> scans = new List<Scan>();
 
-            if (dt != null)
-            {
-                return dt.AsEnumerable().Select(row => PopulateScan(row)).ToList();
-            }
-            else
-            {
-                return scans;
-            }
-        }
+        //    if (dt != null)
+        //    {
+        //        return dt.AsEnumerable().Select(row => PopulateScan(row)).ToList();
+        //    }
+        //    else
+        //    {
+        //        return scans;
+        //    }
+        //}
 
 
         /// <summary>

@@ -58,15 +58,15 @@ namespace STAS.Services
             return await repo.GetEmployeeIdByNumber(cardNumber);
         }
 
-        /// <summary>
-        /// Get Employee List
-        /// </summary>
-        /// <param name="cardNumber"></param>
-        /// <returns></returns>
-        public async Task<List<Employee>> GetAllEmployee()
-        {
-            return await repo.GetAllEmployee();
-        }
+        ///// <summary>
+        ///// Get Employee List
+        ///// </summary>
+        ///// <param name="cardNumber"></param>
+        ///// <returns></returns>
+        //public async Task<List<Employee>> GetAllEmployee()
+        //{
+        //    return await repo.GetAllEmployee();
+        //}
 
         #endregion
     }

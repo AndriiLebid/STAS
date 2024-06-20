@@ -74,16 +74,16 @@ namespace STAS.Services
             return await repo.SearchScanByEmployeeIdAsync(employeeId);
         }
 
-        public List<Scan> SearchScanByDate(DateTime? startDate, DateTime? endDate)
-        {
-            return repo.SearchScanByDate(startDate, endDate);
-        }
+        //public List<Scan> SearchScanByDate(DateTime? startDate, DateTime? endDate)
+        //{
+        //    return repo.SearchScanByDate(startDate, endDate);
+        //}
         
 
-        public Scan SearchLastScanByEmployeeId(int employeeId)
-        {
-            return repo.GetLastScan(employeeId);
-        }
+        //public Scan SearchLastScanByEmployeeId(int employeeId)
+        //{
+        //    return repo.GetLastScan(employeeId);
+        //}
 
         /// <summary>
         /// Search Last Sca nBy Employee Id

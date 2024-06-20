@@ -88,67 +88,67 @@ namespace STAS.API.Controllers
         /// </summary>
         /// <param name="scanIn"></param>
         /// <returns></returns>
-        [HttpPost("addListOfScans")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<List<Scan>>> SyncAllNewRecords(List<ScanApiDTO> scanInList)
-        {
-            try
-            {
-                List<Scan> scanOutList = new();
-                List<ScanType> scanTypeList = await list.GetTypeScan();
-                if (IsList(scanInList))
-                {
-                    return BadRequest("The RawScan is not specified or not a list.");
-                }
+        //[HttpPost("addListOfScans")]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //public async Task<ActionResult<List<Scan>>> SyncAllNewRecords(List<ScanApiDTO> scanInList)
+        //{
+        //    try
+        //    {
+        //        List<Scan> scanOutList = new();
+        //        List<ScanType> scanTypeList = await list.GetTypeScan();
+        //        if (IsList(scanInList))
+        //        {
+        //            return BadRequest("The RawScan is not specified or not a list.");
+        //        }
 
-                foreach (var sc in scanInList)
-                {
-                    var scanType = scanTypeList.FirstOrDefault(d => d.TypeName.Equals(sc.ScanType.ToUpper()));
-                    if (scanType == null)
-                    {
-                        return NotFound("Wrong Scan Type");
-                    }
+        //        foreach (var sc in scanInList)
+        //        {
+        //            var scanType = scanTypeList.FirstOrDefault(d => d.TypeName.Equals(sc.ScanType.ToUpper()));
+        //            if (scanType == null)
+        //            {
+        //                return NotFound("Wrong Scan Type");
+        //            }
 
-                    int? empId = await list.GetEmployeeIdByNumber(sc.EmployeeCardNumber);
+        //            int? empId = await list.GetEmployeeIdByNumber(sc.EmployeeCardNumber);
 
-                    if (empId == null)
-                    {
-                        return NotFound("Wrong Employee");
-                    }
+        //            if (empId == null)
+        //            {
+        //                return NotFound("Wrong Employee");
+        //            }
 
-                    var scan = new Scan
-                    {
-                        ScanDate = sc.ScanDate,
-                        ScanType = scanType.TypeId,
-                        EmployeeId = (int)empId
-                    };
+        //            var scan = new Scan
+        //            {
+        //                ScanDate = sc.ScanDate,
+        //                ScanType = scanType.TypeId,
+        //                EmployeeId = (int)empId
+        //            };
 
-                    scan.ScanDate = sc.ScanDate;
-                    scan.ScanType = scanType.TypeId;
-                    scan.EmployeeId = (int)empId;
+        //            scan.ScanDate = sc.ScanDate;
+        //            scan.ScanType = scanType.TypeId;
+        //            scan.EmployeeId = (int)empId;
 
-                    try
-                    {
-                        var scanOut = await service.AddScanRecordAsync(scan);
-                        scanOutList.Add(scanOut);
-                    }
-                    catch (Exception ex)
-                    {
-                        return BadRequest(ex.Message);
-                    }
+        //            try
+        //            {
+        //                var scanOut = await service.AddScanRecordAsync(scan);
+        //                scanOutList.Add(scanOut);
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                return BadRequest(ex.Message);
+        //            }
 
-                }
+        //        }
 
-                return Ok(scanOutList);
-            }
-            catch (Exception)
-            {
-                return Problem(title: "An internal error has occurred. Please contact the system administrator");
+        //        return Ok(scanOutList);
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return Problem(title: "An internal error has occurred. Please contact the system administrator");
 
-            }
-        }
+        //    }
+        //}
 
 
         /// <summary>
@@ -208,29 +208,29 @@ namespace STAS.API.Controllers
         /// <param></param>
         /// <returns></returns>
 
-        [HttpGet("check")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CheckServer()
-        {
-            try
-            {
-                var scan = true; 
-                if (scan)
-                {
-                    return Ok();
-                }
-                else
-                {
-                    return NotFound();
-                }
-            }
-            catch (Exception)
-            {
-                return BadRequest();
-            }
-        }
+        //[HttpGet("check")]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //public async Task<IActionResult> CheckServer()
+        //{
+        //    try
+        //    {
+        //        var scan = true; 
+        //        if (scan)
+        //        {
+        //            return Ok();
+        //        }
+        //        else
+        //        {
+        //            return NotFound();
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return BadRequest();
+        //    }
+        //}
 
 
 
