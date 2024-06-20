@@ -148,7 +148,12 @@ namespace STAS.Services
             if (previousScan == null && nextScan == null) return true;
             if (previousScan == null && scan.ScanDate <= nextScan.ScanDate) return true;
             if (nextScan == null && scan.ScanDate >= previousScan!.ScanDate) return true;
-            if (previousScan!.ScanDate <= scan.ScanDate && nextScan!.ScanDate > scan.ScanDate) return true;
+
+            if(previousScan != null && nextScan != null)
+            {
+                if (previousScan!.ScanDate <= scan.ScanDate && nextScan!.ScanDate > scan.ScanDate) return true;
+            }
+            
 
             return false;
         }

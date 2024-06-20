@@ -152,6 +152,7 @@ namespace STAS.Web.Controllers
                 if (!ModelState.IsValid)
                 {
                     return View(user);
+                    user.UserTypesList = await GetUserTypes();
                 }
 
                 User usr = new User();
@@ -160,9 +161,7 @@ namespace STAS.Web.Controllers
                 usr.Name = user.Name;
                 usr.UserType = user.UserType;
 
-                //user.UserTypesList = await GetUserTypes();
-
-
+            
                 var result = await service.EditUser(usr);
 
                 if (result.Errors.Count != 0)
@@ -242,7 +241,7 @@ namespace STAS.Web.Controllers
                 }
                 else
                 {
-                    new Exception("The password should be stronger.");
+                    throw new Exception("The password should be stronger.");
                 }
 
                 var result = await service.EditUserPassword(usr);

@@ -210,7 +210,7 @@ fun handleAcceptAction(context: Context, scanIn: ScanIN) {
             context.startActivity(intent)
         }
         else {
-            Toast.makeText(context, "Error happened, try again", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Validation Error happened, try again", Toast.LENGTH_LONG).show()
         }
     }
 }

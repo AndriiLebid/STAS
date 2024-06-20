@@ -237,21 +237,21 @@ fun handleLunchOutAction(context: Context, scanCode: String, db: AppDatabase) {
 }
 
 
-fun handleGetLastScan(employeeId: Int) {
-    val apiService = RestApiService()
-    Log.d("handleGetLastScan", "Requesting last scan for employeeId: $employeeId")
-    apiService.getLastScanByEmployeeId(employeeId) { scan ->
-        if (scan != null) {
-            // Handle successful response
-            Log.d("handleGetLastScan", "Received scan: $scan")
-            println("Scan ID: ${scan.scanId}, Employee ID: ${scan.employeeId}")
-        } else {
-            // Handle error
-            Log.e("handleGetLastScan", "Error retrieving scan")
-            println("Error retrieving scan")
-        }
-    }
-}
+//fun handleGetLastScan(employeeId: Int) {
+//    val apiService = RestApiService()
+//    Log.d("handleGetLastScan", "Requesting last scan for employeeId: $employeeId")
+//    apiService.getLastScanByEmployeeId(employeeId) { scan ->
+//        if (scan != null) {
+//            // Handle successful response
+//            Log.d("handleGetLastScan", "Received scan: $scan")
+//            println("Scan ID: ${scan.scanId}, Employee ID: ${scan.employeeId}")
+//        } else {
+//            // Handle error
+//            Log.e("handleGetLastScan", "Error retrieving scan")
+//            println("Error retrieving scan")
+//        }
+//    }
+//}
 
 
 fun syncLocalData(context: Context, db: AppDatabase) {
