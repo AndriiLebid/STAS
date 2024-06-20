@@ -24,6 +24,8 @@ import com.advatek.stas.network.RestApiService
 import com.advatek.stas.ui.theme.STASTheme
 import java.time.LocalDateTime
 import android.content.Intent
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.room.Room
 import com.advatek.stas.Datasource.AppDatabase
 import com.advatek.stas.Datasource.ScanEntity
@@ -89,6 +91,7 @@ fun ScanCodeForm(modifier: Modifier = Modifier, db: AppDatabase) {
                 value = scanCode,
                 onValueChange = { scanCode = it },
                 label = { Text("Enter code") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -182,7 +185,7 @@ fun handleAction(context: Context, scanCode: String, scanType: String, db: AppDa
         CoroutineScope(Dispatchers.IO).launch {
             db.scanDao().insert(scan)
         }
-
+        Toast.makeText(context, "The scan is saved locally.", Toast.LENGTH_LONG).show()
         return
     }
 
@@ -263,9 +266,6 @@ fun syncLocalData(context: Context, db: AppDatabase) {
                     scanType = scan.scanType
                 )
                 apiService.addScan(scanIN) {
-//                    if (it?.scanId != null) {
-//                        db.scanDao().deleteById(scanId = scan.id)
-//                    }
                 }
             }
             db.scanDao().deleteAll()

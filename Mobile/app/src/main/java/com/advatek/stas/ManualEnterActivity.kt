@@ -193,13 +193,11 @@ fun handleAcceptAction(context: Context, scanIn: ScanIN) {
 
     if (!connectionCheck(context)) {
         Toast.makeText(context, "No internet connection available", Toast.LENGTH_LONG).show()
+
+        (context as ComponentActivity).finish()
         return
     }
 
-//    if (!ServiceBuilder.isServerAvailable()) {
-//        Toast.makeText(context, "Server is not available", Toast.LENGTH_LONG).show()
-//        return
-//    }
 
     val apiService = RestApiService()
 
