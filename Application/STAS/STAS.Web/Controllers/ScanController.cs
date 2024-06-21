@@ -75,6 +75,7 @@ namespace STAS.Web.Controllers
             {
                 if (!ModelState.IsValid)
                 {
+                    scanVM.ScanTypesList = await GetTypes();
                     return View(scanVM);
                 }
 
@@ -201,26 +202,6 @@ namespace STAS.Web.Controllers
             }
         }
 
-        // GET: ScanController/Delete/5
-        //public ActionResult Delete(int id)
-        //{
-        //    return View();
-        //}
-
-        //// POST: ScanController/Delete/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Delete(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
 
         #region Private Methods
 

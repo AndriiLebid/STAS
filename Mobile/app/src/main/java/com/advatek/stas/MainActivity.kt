@@ -2,7 +2,6 @@ package com.advatek.stas
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.widget.TextClock
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -29,7 +28,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.room.Room
 import com.advatek.stas.Datasource.AppDatabase
 import com.advatek.stas.Datasource.ScanEntity
-import com.advatek.stas.network.ServiceBuilder
 import com.advatek.stas.network.connectionCheck
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -41,12 +39,28 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "stas-db").build()
-        syncLocalData(this, db)
+
+        val sharedPreferences = getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        val token = sharedPreferences.getString("jwt_token", null)
+
+
+        //syncLocalData(this, db)
         setContent {
             STASTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    ScanCodeForm(modifier = Modifier.padding(innerPadding), db)
+//                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+//                    ScanCodeForm(modifier = Modifier.padding(innerPadding), db)
+//                }
+
+                if (token == null) {
+                    LoginScreen(onLoginSuccess = {
+                        recreate() // Restart activity to load the main content
+                    })
+                } else {
+                    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                        ScanCodeForm(modifier = Modifier.padding(innerPadding), db)
+                    }
                 }
+
             }
         }
     }
@@ -167,16 +181,30 @@ fun ScanCodeForm(modifier: Modifier = Modifier, db: AppDatabase) {
                 Button(onClick = { scanCode = "" }) {
                     Text("Cancel")
                 }
+                Button(onClick = { handleLogout(context) }) {
+                    Text("Logout")
+                }
             }
         }
     }
 }
 
+fun handleLogout(context: Context) {
+    val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+    with(sharedPreferences.edit()) {
+        remove("jwt_token")
+        apply()
+    }
+    val intent = Intent(context, MainActivity::class.java)
+    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    context.startActivity(intent)
+}
+
+
 fun handleAction(context: Context, scanCode: String, scanType: String, db: AppDatabase) {
 
     if (!connectionCheck(context)) {
         Toast.makeText(context, "No internet connection available", Toast.LENGTH_LONG).show()
-        // Stored date locally
         val scan = ScanEntity(
             employeeCardNumber = scanCode,
             scanDate = LocalDateTime.now().toString(),
@@ -191,7 +219,7 @@ fun handleAction(context: Context, scanCode: String, scanType: String, db: AppDa
 
     syncLocalData(context, db)
 
-    val apiService = RestApiService()
+    val apiService = RestApiService(context)
 
     val scan = ScanIN(
         employeeCardNumber = scanCode,
@@ -258,7 +286,7 @@ fun syncLocalData(context: Context, db: AppDatabase) {
     if (connectionCheck(context)) {
         CoroutineScope(Dispatchers.IO).launch {
             val scans = db.scanDao().getAllScans()
-            val apiService = RestApiService()
+            val apiService = RestApiService(context)
             scans.forEach { scan ->
                 val scanIN = ScanIN(
                     employeeCardNumber = scan.employeeCardNumber,

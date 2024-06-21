@@ -63,6 +63,7 @@ namespace STAS.Web.Controllers
             {
                 if (!ModelState.IsValid)
                 {
+                    user.UserTypesList = await GetUserTypes();
                     return View(user);
                 }
 
@@ -108,7 +109,8 @@ namespace STAS.Web.Controllers
             }
             catch(Exception ex)
             {
-                TempData["Error"] = ex.Message.ToString();
+                ViewBag.ErrorMessage = ex.Message;
+                user.UserTypesList = await GetUserTypes();
                 return View(user);
             }
         }
@@ -151,8 +153,8 @@ namespace STAS.Web.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return View(user);
                     user.UserTypesList = await GetUserTypes();
+                    return View(user);
                 }
 
                 User usr = new User();

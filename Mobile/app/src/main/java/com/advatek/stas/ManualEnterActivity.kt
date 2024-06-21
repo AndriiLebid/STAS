@@ -33,7 +33,7 @@ import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
 import com.advatek.stas.network.connectionCheck
-import com.advatek.stas.network.isServerAvailable
+//import com.advatek.stas.network.isServerAvailable
 
 class ManualEnterActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -199,7 +199,7 @@ fun handleAcceptAction(context: Context, scanIn: ScanIN) {
     }
 
 
-    val apiService = RestApiService()
+    val apiService = RestApiService(context)
 
     apiService.addScan(scanIn) {
         if (it?.scanId != null) {
