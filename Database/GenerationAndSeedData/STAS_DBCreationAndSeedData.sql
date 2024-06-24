@@ -3,8 +3,44 @@ NAME: Andrii Lebid
 DATE: 05/27/2024
 PURPOSE: Advatek System
 Description: Simple Time And Attendance System /Database Creation Script
-Version: 2.0
+Version: 3.0
 */
+
+USE [master];
+GO
+
+-- Delete old database
+IF DB_ID('STAS-A') IS NOT NULL
+BEGIN
+	DROP DATABASE [STAS-A];
+		PRINT '------------------------------------------------------------------------------------------';
+		PRINT 'STAS-A database has been DELETED'
+		PRINT '------------------------------------------------------------------------------------------';
+END
+
+GO
+
+--Create STAS database 
+
+IF DB_ID('STAS-A') IS NULL
+BEGIN
+	CREATE DATABASE [STAS-A];
+	
+		PRINT '------------------------------------------------------------------------------------------';
+		PRINT 'STAS-A database has been created'
+		PRINT '------------------------------------------------------------------------------------------';
+	END
+ELSE
+	BEGIN
+	
+		PRINT '------------------------------------------------------------------------------------------';
+		PRINT 'Database exist';
+		PRINT '------------------------------------------------------------------------------------------';
+	END
+
+GO
+
+
 
 USE [STAS-A];
 GO 
@@ -103,7 +139,7 @@ GO
 
 
  
-IF OBJECT_ID('EpicSolutions.dbo.User') IS NULL
+IF OBJECT_ID('[STAS-A].dbo.User') IS NULL
 	BEGIN
 	CREATE TABLE [User] (
 		UserId INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
@@ -132,7 +168,7 @@ GO
 
 
  
-IF OBJECT_ID('EpicSolutions.dbo.Employee') IS NULL
+IF OBJECT_ID('[STAS-A].dbo.Employee') IS NULL
 	BEGIN
 	CREATE TABLE [Employee] (
 		EmployeeId INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
@@ -161,7 +197,7 @@ GO
 
 
  
-IF OBJECT_ID('EpicSolutions.dbo.RawScan') IS NULL
+IF OBJECT_ID('[STAS-A].dbo.RawScan') IS NULL
     BEGIN 
         CREATE TABLE [RawScan] (
             RawScanID INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
@@ -275,12 +311,12 @@ GO
 
 SET IDENTITY_INSERT [dbo].[RawScan] ON 
 
-INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanType) VALUES (1, 1, '2023-06-01 10:25:00', 1);
-INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanType) VALUES (2, 1, '2023-06-01 11:25:00', 1);
-INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanType) VALUES (3, 2, '2023-06-01 10:27:00', 1);
-INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanType) VALUES (4, 2, '2023-06-01 11:27:00', 2);
-INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanType) VALUES (5, 2, '2023-06-01 12:25:00', 1);
-INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanType) VALUES (6, 2, '2023-06-01 12:25:00', 2);
+INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanType) VALUES (1, 1, '2024-06-01 10:25:00', 1);
+INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanType) VALUES (2, 1, '2024-06-01 11:25:00', 1);
+INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanType) VALUES (3, 2, '2024-06-01 10:27:00', 1);
+INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanType) VALUES (4, 2, '2024-06-01 11:27:00', 2);
+INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanType) VALUES (5, 2, '2024-06-01 12:25:00', 1);
+INSERT [dbo].[RawScan] (RawScanID, EmployeeId, ScanDate, ScanType) VALUES (6, 2, '2024-06-01 12:25:00', 2);
 
 
 SET IDENTITY_INSERT [dbo].[RawScan] OFF

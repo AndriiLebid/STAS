@@ -3,7 +3,7 @@ NAME: Andrii Lebid
 DATE: 05/27/2024
 PURPOSE: Advatek System
 Description: Simple Time And Attendance System / Stored Procedures
-Version: 1.3
+Version: 3.1
 */
 
 
