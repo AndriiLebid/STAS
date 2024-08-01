@@ -270,7 +270,7 @@ namespace STAS.Web.Controllers
                           && sc.ScanDate <= endDateTime).ToList();
                 scans = scans.OrderBy(s => s.ScanDate).ToList();
 
-                //Ctera shift instance
+                //Create shift instance
                 Shift currentShift = new();
 
                 // Populate shifts
