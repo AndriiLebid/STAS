@@ -1,5 +1,5 @@
 # STAS
-Simple Time And Attendance System
+Simple Time And Attendance System - CRUD Application with REST API service.
 
 The application implements procedures for recording employees' working hours and creating and editing employee data.
 
